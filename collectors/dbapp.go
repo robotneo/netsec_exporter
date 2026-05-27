@@ -57,13 +57,14 @@ func (c *DBAPP) Collect(dev core.Device) ([]core.Metric, error) {
 }
 
 func (c *DBAPP) collectDastgfw(dev core.Device) ([]core.Metric, error) {
-	url := fmt.Sprintf("https://%s/api/v1/iplink", dev.Host)
+	url := fmt.Sprintf("https://%s/api/v1/iplink?page=1&size=10&key=", dev.Host)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Authorization", "Bearer "+dev.Token)
+	// 明御防火墙使用 AuthorizationToken 作为 Header 键名
+	req.Header.Set("AuthorizationToken", dev.Token)
 
 	resp, err := c.client.Do(req)
 	if err != nil {

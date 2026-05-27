@@ -18,8 +18,18 @@
 go build -o netsec_exporter main.go
 ```
 
-### 2. 配置说明
-编辑 `config.yaml` 文件，配置全局参数和设备列表。该文件必须与二进制文件放在同一目录下。
+### 2. 运行说明
+二进制文件默认读取当前目录下的 `config.yaml`。您也可以通过 `-config` 参数指定路径：
+```bash
+# 默认读取当前目录的 config.yaml
+./netsec_exporter
+
+# 指定配置文件路径
+./netsec_exporter -config /etc/netsec/my_config.yaml
+```
+
+### 3. 配置说明
+编辑 `config.yaml` 文件，配置全局参数和设备列表。
 ```yaml
 global:
   interval: 60              # 采集周期（秒）

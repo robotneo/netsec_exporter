@@ -32,10 +32,10 @@ type Config struct {
 
 var config Config
 
-func load() {
-	data, err := os.ReadFile("config.yaml")
+func load(configPath string) {
+	data, err := os.ReadFile(configPath)
 	if err != nil {
-		log.Fatalf("read config failed: %v", err)
+		log.Fatalf("read config failed from %s: %v", configPath, err)
 	}
 	if err := yaml.Unmarshal(data, &config); err != nil {
 		log.Fatalf("unmarshal config failed: %v", err)
@@ -82,6 +82,7 @@ WantedBy=multi-user.target
 
 func main() {
 	install := flag.Bool("install", false, "Install systemd service")
+	configPath := flag.String("config", "config.yaml", "Path to config file")
 	flag.Parse()
 
 	if *install {
@@ -89,7 +90,7 @@ func main() {
 		return
 	}
 
-	load()
+	load(*configPath)
 
 	core.InitMetrics()
 
