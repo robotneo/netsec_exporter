@@ -15,7 +15,7 @@ metrics:
 devices:
   # 明御防火墙示例（安恒品牌）
   - name: fw-core-01
-    host: 10.1.1.1
+    host: 10.18.130.212
     token: aaa
     vendor: dbapp
     type: dastgfw
