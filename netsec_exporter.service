@@ -1,0 +1,15 @@
+[Unit]
+Description=Network Security Device Exporter
+After=network.target
+
+[Service]
+Type=simple
+User=root
+# 这里的 WorkingDirectory 和 ExecStart 会在执行 --install 时自动根据当前路径生成
+WorkingDirectory=/path/to/netsec_exporter
+ExecStart=/path/to/netsec_exporter/netsec_exporter
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

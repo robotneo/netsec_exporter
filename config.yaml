@@ -1,0 +1,35 @@
+global:
+  # 采集周期（秒），系统每隔多少秒执行一轮全量采集
+  interval: 60
+  # 请求超时时间（秒），API 调用最长等待时间
+  timeout: 10
+  # 并发协程数，用于支持多设备高并发采集的任务池大小
+  workers: 20
+  # 是否跳过 TLS 证书验证（内网设备自签名证书建议开启）
+  insecure_skip_verify: true
+
+metrics:
+  # Exporter 指标监听地址
+  listen: ":9808"
+
+devices:
+  # 明御防火墙示例（安恒品牌）
+  - name: fw-core-01
+    host: 10.1.1.1
+    token: aaa
+    vendor: dbapp
+    type: dastgfw
+
+  # 华三设备模板
+  - name: fw-core-02
+    host: 10.1.1.2
+    token: bbb
+    vendor: h3c
+    type: firewall
+
+  # 华为设备模板
+  - name: fw-core-03
+    host: 10.1.1.3
+    token: ccc
+    vendor: huawei
+    type: firewall
