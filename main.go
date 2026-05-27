@@ -42,6 +42,25 @@ func load(configPath string) {
 	}
 }
 
+func normalizeConfig(configPath string) {
+	if config.Global.Interval <= 0 {
+		log.Printf("invalid global.interval=%d in %s, fallback to 60", config.Global.Interval, configPath)
+		config.Global.Interval = 60
+	}
+	if config.Global.Timeout <= 0 {
+		log.Printf("invalid global.timeout=%d in %s, fallback to 10", config.Global.Timeout, configPath)
+		config.Global.Timeout = 10
+	}
+	if config.Global.Workers <= 0 {
+		log.Printf("invalid global.workers=%d in %s, fallback to 1", config.Global.Workers, configPath)
+		config.Global.Workers = 1
+	}
+	if config.Metrics.Listen == "" {
+		log.Printf("empty metrics.listen in %s, fallback to :9808", configPath)
+		config.Metrics.Listen = ":9808"
+	}
+}
+
 func installService() {
 	exePath, err := os.Executable()
 	if err != nil {
@@ -91,6 +110,7 @@ func main() {
 	}
 
 	load(*configPath)
+	normalizeConfig(*configPath)
 
 	core.InitMetrics()
 
