@@ -42,7 +42,14 @@ devices:
     host: 192.168.1.1
     token: your-api-token
     vendor: dbapp           # 品牌：dbapp (安恒)
-    type: dastgfw           # 类型：dastgfw (明御防火墙)
+    type: firewall          # 类型：firewall (明御防火墙)
+
+  - name: sangfor-fw-01
+    host: 192.168.254.1
+    username: admin
+    password: your-password
+    vendor: sangfor         # 品牌：sangfor (深信服)
+    type: firewall          # 类型：firewall (深信服防火墙)
 ```
 
 ### 3. 自动安装服务
@@ -78,6 +85,7 @@ systemctl stop netsec_exporter
 | :--- | :--- | :--- | :--- |
 | `netsec_device_up` | Gauge | 设备在线状态 (1:正常, 0:异常) | `device, vendor, type` |
 | `netsec_iplink_status` | Gauge | IPLink 状态 (1:正常, 0:异常) | `device, vendor, type, name, interface, destination` |
+| `netsec_cpu_current_percent` | Gauge | CPU 当前使用率（百分比） | `device, vendor, type` |
 | `netsec_scrape_duration_seconds` | Gauge | 每次采集耗时（秒） | `device, vendor, type` |
 
 ## 开发者指南

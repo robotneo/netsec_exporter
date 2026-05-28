@@ -116,6 +116,7 @@ func main() {
 
 	// register plugins
 	core.Register(&collectors.DBAPP{})
+	core.Register(&collectors.Sangfor{})
 	// core.Register(&collectors.H3C{})    // 暂不纳入采集，仅作示例
 	// core.Register(&collectors.Huawei{}) // 暂不纳入采集，仅作示例
 

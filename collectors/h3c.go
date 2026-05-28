@@ -1,12 +1,19 @@
 package collectors
 
 import (
+	"fmt"
 	"netsec_exporter/core"
+	"sync"
+	"time"
+
+	h3cclient "netsec_exporter/collectors/h3c/client"
+	h3cfw "netsec_exporter/collectors/h3c/firewall"
 )
 
-// H3C 华三设备采集示例
-// 目前仅作为模板，暂不启用实际采集逻辑
-type H3C struct{}
+type H3C struct {
+	once   sync.Once
+	client *h3cclient.Client
+}
 
 func (c *H3C) Name() string {
 	return "h3c"
@@ -17,21 +24,18 @@ func (c *H3C) Supported(dev core.Device) bool {
 }
 
 func (c *H3C) Collect(dev core.Device) ([]core.Metric, error) {
-	// TODO: 后续在此实现 H3C 的 SNMP 或 REST API 采集逻辑
-	// 示例：返回一个空列表或模拟数据
-	var metrics []core.Metric
+	c.init()
 
-	/* 模拟数据示例：
-	metrics = append(metrics, core.Metric{
-		Name:  "netsec_iplink_status",
-		Value: 1,
-		Labels: map[string]string{
-			"name":        "TestLink",
-			"interface":   "GE1/0/1",
-			"destination": "8.8.8.8",
-		},
+	switch dev.Type {
+	case "firewall":
+		return h3cfw.Collect(c.client, dev)
+	default:
+		return nil, fmt.Errorf("unsupported device type for h3c: %s", dev.Type)
+	}
+}
+
+func (c *H3C) init() {
+	c.once.Do(func() {
+		c.client = h3cclient.New(10*time.Second, true)
 	})
-	*/
-
-	return metrics, nil
 }

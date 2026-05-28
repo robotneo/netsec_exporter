@@ -18,7 +18,15 @@ devices:
     host: 10.18.130.212
     token: aaa
     vendor: dbapp
-    type: dastgfw
+    type: firewall
+
+  # 深信服防火墙示例
+  - name: sangfor-fw-01
+    host: 192.168.254.1
+    username: admin
+    password: PthfCj2UZ%
+    vendor: sangfor
+    type: firewall
 
   # 华三设备模板
   - name: fw-core-02
