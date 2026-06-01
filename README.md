@@ -85,7 +85,9 @@ systemctl stop netsec_exporter
 | :--- | :--- | :--- | :--- |
 | `netsec_device_up` | Gauge | 设备在线状态 (1:正常, 0:异常) | `device, host, vendor, type` |
 | `netsec_iplink_status` | Gauge | IPLink 状态 (1:正常, 0:异常) | `device, host, vendor, type, name, interface, destination` |
-| `netsec_cpu_current_percent` | Gauge | CPU 当前使用率（百分比） | `device, host, vendor, type` |
+| `netsec_cpu_usage_percent` | Gauge | CPU 使用率（百分比） | `device, host, vendor, type` |
+| `netsec_memory_usage_percent` | Gauge | 内存使用率（百分比） | `device, host, vendor, type` |
+| `netsec_disk_usage_percent` | Gauge | 硬盘使用率（百分比） | `device, host, vendor, type` |
 | `netsec_scrape_duration_seconds` | Gauge | 每次采集耗时（秒） | `device, host, vendor, type` |
 
 ## 开发者指南

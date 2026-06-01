@@ -48,15 +48,47 @@ func (c *Sangfor) collectFirewallV1(dev core.Device) ([]core.Metric, error) {
 		return nil, err
 	}
 
-	metrics, err := sangforfw.CollectCPUCurrentPercent(c.client, sess, dev)
-	if err == nil {
-		return metrics, nil
+	cpuMetrics, err := sangforfw.CollectCPUCurrentPercent(c.client, sess, dev)
+	if err != nil {
+		c.sm.Invalidate(dev.Host)
+		sess, err = c.sm.GetOrLogin(dev)
+		if err != nil {
+			return nil, err
+		}
+		cpuMetrics, err = sangforfw.CollectCPUCurrentPercent(c.client, sess, dev)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	c.sm.Invalidate(dev.Host)
-	sess, err = c.sm.GetOrLogin(dev)
+	memMetrics, err := sangforfw.CollectMemoryUsagePercent(c.client, sess, dev)
 	if err != nil {
-		return nil, err
+		c.sm.Invalidate(dev.Host)
+		sess, err = c.sm.GetOrLogin(dev)
+		if err != nil {
+			return nil, err
+		}
+		memMetrics, err = sangforfw.CollectMemoryUsagePercent(c.client, sess, dev)
+		if err != nil {
+			return nil, err
+		}
 	}
-	return sangforfw.CollectCPUCurrentPercent(c.client, sess, dev)
+
+	diskMetrics, err := sangforfw.CollectDiskUsagePercent(c.client, sess, dev)
+	if err != nil {
+		c.sm.Invalidate(dev.Host)
+		sess, err = c.sm.GetOrLogin(dev)
+		if err != nil {
+			return nil, err
+		}
+		diskMetrics, err = sangforfw.CollectDiskUsagePercent(c.client, sess, dev)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	metrics := append([]core.Metric{}, cpuMetrics...)
+	metrics = append(metrics, memMetrics...)
+	metrics = append(metrics, diskMetrics...)
+	return metrics, nil
 }
