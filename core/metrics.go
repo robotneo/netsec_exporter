@@ -10,7 +10,7 @@ var (
 			Name: "netsec_iplink_status",
 			Help: "Network security device IP link status",
 		},
-		[]string{"device", "name", "interface", "destination", "vendor", "type"},
+		[]string{"device", "host", "name", "interface", "destination", "vendor", "type"},
 	)
 
 	cpuCurrentPercent = prometheus.NewGaugeVec(
@@ -18,7 +18,7 @@ var (
 			Name: "netsec_cpu_current_percent",
 			Help: "Network security device CPU current usage percent",
 		},
-		[]string{"device", "vendor", "type"},
+		[]string{"device", "host", "vendor", "type"},
 	)
 
 	deviceUp = prometheus.NewGaugeVec(
@@ -26,7 +26,7 @@ var (
 			Name: "netsec_device_up",
 			Help: "Network security device status",
 		},
-		[]string{"device", "vendor", "type"},
+		[]string{"device", "host", "vendor", "type"},
 	)
 
 	scrapeDuration = prometheus.NewGaugeVec(
@@ -34,7 +34,7 @@ var (
 			Name: "netsec_scrape_duration_seconds",
 			Help: "Network security device scrape duration",
 		},
-		[]string{"device", "vendor", "type"},
+		[]string{"device", "host", "vendor", "type"},
 	)
 )
 
