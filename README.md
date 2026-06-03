@@ -88,6 +88,8 @@ systemctl stop netsec_exporter
 | `netsec_cpu_usage_percent` | Gauge | CPU 使用率（百分比） | `device, host, vendor, type` |
 | `netsec_memory_usage_percent` | Gauge | 内存使用率（百分比） | `device, host, vendor, type` |
 | `netsec_disk_usage_percent` | Gauge | 硬盘使用率（百分比） | `device, host, vendor, type` |
+| `netsec_session_concurrent` | Gauge | 实时并发会话数（单位：session） | `device, host, vendor, type` |
+| `netsec_session_creation_rate` | Gauge | 实时新建会话数（单位：session） | `device, host, vendor, type` |
 | `netsec_scrape_duration_seconds` | Gauge | 每次采集耗时（秒） | `device, host, vendor, type` |
 
 ## 开发者指南

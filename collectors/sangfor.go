@@ -87,8 +87,64 @@ func (c *Sangfor) collectFirewallV1(dev core.Device) ([]core.Metric, error) {
 		}
 	}
 
+	concurrentMetrics, err := sangforfw.CollectConcurrentSessions(c.client, sess, dev)
+	if err != nil {
+		c.sm.Invalidate(dev.Host)
+		sess, err = c.sm.GetOrLogin(dev)
+		if err != nil {
+			return nil, err
+		}
+		concurrentMetrics, err = sangforfw.CollectConcurrentSessions(c.client, sess, dev)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	newSessionMetrics, err := sangforfw.CollectNewSessions(c.client, sess, dev)
+	if err != nil {
+		c.sm.Invalidate(dev.Host)
+		sess, err = c.sm.GetOrLogin(dev)
+		if err != nil {
+			return nil, err
+		}
+		newSessionMetrics, err = sangforfw.CollectNewSessions(c.client, sess, dev)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	trafficMetrics, err := sangforfw.CollectInterfaceTrafficBits(c.client, sess, dev)
+	if err != nil {
+		c.sm.Invalidate(dev.Host)
+		sess, err = c.sm.GetOrLogin(dev)
+		if err != nil {
+			return nil, err
+		}
+		trafficMetrics, err = sangforfw.CollectInterfaceTrafficBits(c.client, sess, dev)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	haMetrics, err := sangforfw.CollectHAStatus(c.client, sess, dev)
+	if err != nil {
+		c.sm.Invalidate(dev.Host)
+		sess, err = c.sm.GetOrLogin(dev)
+		if err != nil {
+			return nil, err
+		}
+		haMetrics, err = sangforfw.CollectHAStatus(c.client, sess, dev)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	metrics := append([]core.Metric{}, cpuMetrics...)
 	metrics = append(metrics, memMetrics...)
 	metrics = append(metrics, diskMetrics...)
+	metrics = append(metrics, concurrentMetrics...)
+	metrics = append(metrics, newSessionMetrics...)
+	metrics = append(metrics, trafficMetrics...)
+	metrics = append(metrics, haMetrics...)
 	return metrics, nil
 }
