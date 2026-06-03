@@ -223,3 +223,217 @@ func trafficUnitToBitsFactor(unit string) (float64, error) {
 
 	return 0, fmt.Errorf("interfacetraffics unsupported unit: %s", unit)
 }
+
+func CollectInterfaces(c *client.Client, sess client.Session, dev core.Device) ([]core.Metric, error) {
+	type ipAddr struct {
+		Start string `json:"start"`
+		Bits  int    `json:"bits"`
+	}
+	type staticIPEntry struct {
+		IPAddress ipAddr `json:"ipaddress"`
+	}
+	type ipv4Info struct {
+		IPv4Mode string          `json:"ipv4Mode"`
+		StaticIP []staticIPEntry `json:"staticIp"`
+	}
+	type speedDuplex struct {
+		Speed float64 `json:"speed"`
+	}
+	type ethInterface struct {
+		PhysicalStatus bool        `json:"physicalStatus"`
+		LinkStatus     bool        `json:"linkStatus"`
+		Name           string      `json:"name"`
+		Description    string      `json:"description"`
+		Zone           string      `json:"zone"`
+		MAC            string      `json:"mac"`
+		MTU            float64     `json:"mtu"`
+		Ping           *bool       `json:"ping"`
+		WanEnable      string      `json:"wanEnable"`
+		EthToolType    string      `json:"ethToolType"`
+		IfType         string      `json:"ifType"`
+		IfMode         string      `json:"ifMode"`
+		SpeedDuplex    speedDuplex `json:"speedDuplex"`
+		SendSpeed      string      `json:"sendSpeed"`
+		RecvSpeed      string      `json:"recvSpeed"`
+		SendPackets    float64     `json:"sendPackets"`
+		RecvPackets    float64     `json:"recvPackets"`
+		FlowUnit       string      `json:"flowUnit"`
+		IPv4           ipv4Info    `json:"ipv4"`
+	}
+
+	type response struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+		Data    struct {
+			Data struct {
+				Eth []ethInterface `json:"eth"`
+			} `json:"data"`
+			Eth []ethInterface `json:"eth"`
+		} `json:"data"`
+	}
+
+	endpoints := []string{
+		fmt.Sprintf("https://%s/api/v1/namespaces/%s/interfaces", dev.Host, sess.Namespace),
+		fmt.Sprintf("https://%s/api/v1/namespaces/@namespace/interfaces", dev.Host),
+		fmt.Sprintf("https://%s/api/v1/namespaces/%s/interfacetraffics", dev.Host, sess.Namespace),
+		fmt.Sprintf("https://%s/api/v1/namespaces/@namespace/interfacetraffics", dev.Host),
+	}
+
+	var lastErr error
+	for _, apiURL := range endpoints {
+		req, err := http.NewRequest("GET", apiURL, nil)
+		if err != nil {
+			return nil, err
+		}
+		req.Header.Set("AuthorizationToken", sess.Token)
+
+		resp, err := c.HTTPClient.Do(req)
+		if err != nil {
+			lastErr = err
+			continue
+		}
+		metrics, hasEth, err := func() ([]core.Metric, bool, error) {
+			defer resp.Body.Close()
+
+			if resp.StatusCode == http.StatusNotFound {
+				return nil, false, nil
+			}
+			if resp.StatusCode != http.StatusOK {
+				return nil, false, fmt.Errorf("interfaces api status code: %d", resp.StatusCode)
+			}
+
+			var r response
+			if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
+				return nil, false, err
+			}
+			if r.Code != 0 {
+				return nil, false, fmt.Errorf("interfaces failed: code=%d message=%s", r.Code, r.Message)
+			}
+
+			eths := r.Data.Data.Eth
+			if len(eths) == 0 {
+				eths = r.Data.Eth
+			}
+			if len(eths) == 0 {
+				return nil, false, nil
+			}
+
+			var metrics []core.Metric
+			for _, eth := range eths {
+				baseLabels := map[string]string{
+					"interface":   eth.Name,
+					"description": eth.Description,
+					"zone":        eth.Zone,
+					"mac":         eth.MAC,
+					"ipaddress":   "",
+				}
+
+				if eth.PhysicalStatus && eth.LinkStatus && strings.EqualFold(strings.TrimSpace(eth.IPv4.IPv4Mode), "STATIC") {
+					var ips []string
+					for _, ip := range eth.IPv4.StaticIP {
+						start := strings.TrimSpace(ip.IPAddress.Start)
+						if start == "" {
+							continue
+						}
+						if ip.IPAddress.Bits > 0 {
+							ips = append(ips, fmt.Sprintf("%s/%d", start, ip.IPAddress.Bits))
+						} else {
+							ips = append(ips, start)
+						}
+					}
+					if len(ips) > 0 {
+						baseLabels["ipaddress"] = strings.Join(ips, ",")
+					}
+				}
+
+				ping := 0.0
+				if eth.Ping != nil && *eth.Ping {
+					ping = 1
+				}
+
+				wanEnable := 0.0
+				switch strings.ToUpper(strings.TrimSpace(eth.WanEnable)) {
+				case "ENABLE":
+					wanEnable = 1
+				case "DISABLE":
+					wanEnable = 0
+				}
+
+				ethToolType := 0.0
+				ett := strings.ToUpper(strings.TrimSpace(eth.EthToolType))
+				switch {
+				case strings.Contains(ett, "FIBER"):
+					ethToolType = 1
+				case strings.HasPrefix(ett, "TP"):
+					ethToolType = 0
+				}
+
+				ifTypePhysical := 0.0
+				if strings.ToUpper(strings.TrimSpace(eth.IfType)) == "PHYSICALIF" {
+					ifTypePhysical = 1
+				}
+
+				ifMode := 0.0
+				switch strings.ToUpper(strings.TrimSpace(eth.IfMode)) {
+				case "ROUTE":
+					ifMode = 1
+				case "BRIDGE":
+					ifMode = 0
+				}
+
+				sendBps := 0.0
+				recvBps := 0.0
+				if strings.TrimSpace(eth.SendSpeed) != "" {
+					val, err := parseThroughputToBitsPerSecond(eth.SendSpeed, "bps")
+					if err == nil {
+						sendBps = val
+					}
+				}
+				if strings.TrimSpace(eth.RecvSpeed) != "" {
+					val, err := parseThroughputToBitsPerSecond(eth.RecvSpeed, "bps")
+					if err == nil {
+						recvBps = val
+					}
+				}
+
+				metrics = append(metrics,
+					core.Metric{Name: "netsec_interface_physical_status", Value: boolTo01(eth.PhysicalStatus), Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_link_status", Value: boolTo01(eth.LinkStatus), Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_mtu", Value: eth.MTU, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_ping", Value: ping, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_wan_enable", Value: wanEnable, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_eth_tool_type", Value: ethToolType, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_if_type_physical", Value: ifTypePhysical, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_if_mode", Value: ifMode, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_speed_mbps", Value: eth.SpeedDuplex.Speed, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_send_speed_bits", Value: sendBps, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_recv_speed_bits", Value: recvBps, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_send_packets", Value: eth.SendPackets, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_recv_packets", Value: eth.RecvPackets, Labels: baseLabels},
+				)
+			}
+
+			return metrics, true, nil
+		}()
+		if err != nil {
+			return nil, err
+		}
+		if hasEth {
+			return metrics, nil
+		}
+		lastErr = fmt.Errorf("interfaces empty eth")
+		continue
+	}
+
+	if lastErr == nil {
+		lastErr = fmt.Errorf("interfaces fetch failed")
+	}
+	return nil, lastErr
+}
+
+func boolTo01(v bool) float64 {
+	if v {
+		return 1
+	}
+	return 0
+}

@@ -126,6 +126,19 @@ func (c *Sangfor) collectFirewallV1(dev core.Device) ([]core.Metric, error) {
 		}
 	}
 
+	interfaceMetrics, err := sangforfw.CollectInterfaces(c.client, sess, dev)
+	if err != nil {
+		c.sm.Invalidate(dev.Host)
+		sess, err = c.sm.GetOrLogin(dev)
+		if err != nil {
+			return nil, err
+		}
+		interfaceMetrics, err = sangforfw.CollectInterfaces(c.client, sess, dev)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	haMetrics, err := sangforfw.CollectHAStatus(c.client, sess, dev)
 	if err != nil {
 		c.sm.Invalidate(dev.Host)
@@ -145,6 +158,7 @@ func (c *Sangfor) collectFirewallV1(dev core.Device) ([]core.Metric, error) {
 	metrics = append(metrics, concurrentMetrics...)
 	metrics = append(metrics, newSessionMetrics...)
 	metrics = append(metrics, trafficMetrics...)
+	metrics = append(metrics, interfaceMetrics...)
 	metrics = append(metrics, haMetrics...)
 	return metrics, nil
 }

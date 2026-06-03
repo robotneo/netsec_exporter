@@ -69,6 +69,100 @@ var (
 		[]string{"device", "host", "vendor", "type"},
 	)
 
+	interfaceLabelNames = []string{"device", "host", "interface", "description", "zone", "mac", "ipaddress", "vendor", "type"}
+
+	interfacePhysicalStatus = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_interface_physical_status",
+			Help: "Network security device interface physical status (1=true, 0=false)",
+		},
+		interfaceLabelNames,
+	)
+	interfaceLinkStatus = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_interface_link_status",
+			Help: "Network security device interface link status (1=true, 0=false)",
+		},
+		interfaceLabelNames,
+	)
+	interfaceMTU = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_interface_mtu",
+			Help: "Network security device interface MTU",
+		},
+		interfaceLabelNames,
+	)
+	interfacePing = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_interface_ping",
+			Help: "Network security device interface ping enabled (1=true, 0=false)",
+		},
+		interfaceLabelNames,
+	)
+	interfaceWanEnable = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_interface_wan_enable",
+			Help: "Network security device interface WAN enabled (ENABLE=1, DISABLE=0)",
+		},
+		interfaceLabelNames,
+	)
+	interfaceEthToolType = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_interface_eth_tool_type",
+			Help: "Network security device interface port type (TP=0, FIBER=1)",
+		},
+		interfaceLabelNames,
+	)
+	interfaceIfTypePhysical = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_interface_if_type_physical",
+			Help: "Network security device interface is physical (PHYSICALIF=1, else=0)",
+		},
+		interfaceLabelNames,
+	)
+	interfaceIfMode = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_interface_if_mode",
+			Help: "Network security device interface mode (BRIDGE=0, ROUTE=1)",
+		},
+		interfaceLabelNames,
+	)
+	interfaceSpeedMbps = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_interface_speed_mbps",
+			Help: "Network security device interface negotiated speed (Mbps)",
+		},
+		interfaceLabelNames,
+	)
+	interfaceSendSpeedBits = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_interface_send_speed_bits",
+			Help: "Network security device interface send throughput (bits per second)",
+		},
+		interfaceLabelNames,
+	)
+	interfaceRecvSpeedBits = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_interface_recv_speed_bits",
+			Help: "Network security device interface receive throughput (bits per second)",
+		},
+		interfaceLabelNames,
+	)
+	interfaceSendPackets = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_interface_send_packets",
+			Help: "Network security device interface send packets",
+		},
+		interfaceLabelNames,
+	)
+	interfaceRecvPackets = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_interface_recv_packets",
+			Help: "Network security device interface receive packets",
+		},
+		interfaceLabelNames,
+	)
+
 	haEnabled = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: "netsec_ha_enabled",
@@ -111,6 +205,19 @@ func InitMetrics() {
 	prometheus.MustRegister(newSessions)
 	prometheus.MustRegister(interfaceSendBits)
 	prometheus.MustRegister(interfaceRecvBits)
+	prometheus.MustRegister(interfacePhysicalStatus)
+	prometheus.MustRegister(interfaceLinkStatus)
+	prometheus.MustRegister(interfaceMTU)
+	prometheus.MustRegister(interfacePing)
+	prometheus.MustRegister(interfaceWanEnable)
+	prometheus.MustRegister(interfaceEthToolType)
+	prometheus.MustRegister(interfaceIfTypePhysical)
+	prometheus.MustRegister(interfaceIfMode)
+	prometheus.MustRegister(interfaceSpeedMbps)
+	prometheus.MustRegister(interfaceSendSpeedBits)
+	prometheus.MustRegister(interfaceRecvSpeedBits)
+	prometheus.MustRegister(interfaceSendPackets)
+	prometheus.MustRegister(interfaceRecvPackets)
 	prometheus.MustRegister(haEnabled)
 	prometheus.MustRegister(haMode)
 	prometheus.MustRegister(deviceUp)
@@ -135,6 +242,32 @@ func SetMetric(m Metric) {
 		interfaceSendBits.With(m.Labels).Set(m.Value)
 	case "netsec_interface_recv_bits":
 		interfaceRecvBits.With(m.Labels).Set(m.Value)
+	case "netsec_interface_physical_status":
+		interfacePhysicalStatus.With(m.Labels).Set(m.Value)
+	case "netsec_interface_link_status":
+		interfaceLinkStatus.With(m.Labels).Set(m.Value)
+	case "netsec_interface_mtu":
+		interfaceMTU.With(m.Labels).Set(m.Value)
+	case "netsec_interface_ping":
+		interfacePing.With(m.Labels).Set(m.Value)
+	case "netsec_interface_wan_enable":
+		interfaceWanEnable.With(m.Labels).Set(m.Value)
+	case "netsec_interface_eth_tool_type":
+		interfaceEthToolType.With(m.Labels).Set(m.Value)
+	case "netsec_interface_if_type_physical":
+		interfaceIfTypePhysical.With(m.Labels).Set(m.Value)
+	case "netsec_interface_if_mode":
+		interfaceIfMode.With(m.Labels).Set(m.Value)
+	case "netsec_interface_speed_mbps":
+		interfaceSpeedMbps.With(m.Labels).Set(m.Value)
+	case "netsec_interface_send_speed_bits":
+		interfaceSendSpeedBits.With(m.Labels).Set(m.Value)
+	case "netsec_interface_recv_speed_bits":
+		interfaceRecvSpeedBits.With(m.Labels).Set(m.Value)
+	case "netsec_interface_send_packets":
+		interfaceSendPackets.With(m.Labels).Set(m.Value)
+	case "netsec_interface_recv_packets":
+		interfaceRecvPackets.With(m.Labels).Set(m.Value)
 	case "netsec_ha_enabled":
 		haEnabled.With(m.Labels).Set(m.Value)
 	case "netsec_ha_mode":
