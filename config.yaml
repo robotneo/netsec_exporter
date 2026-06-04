@@ -12,32 +12,7 @@ metrics:
   # Exporter 指标监听地址
   listen: ":9808"
 
-devices:
-  # 明御防火墙示例（安恒品牌）
-  - name: fw-core-01
-    host: 10.18.130.212
-    token: aaa
-    vendor: dbapp
-    type: firewall
-
-  # 深信服防火墙示例
-  - name: sangfor-fw-01
-    host: 192.168.254.1
-    username: admin
-    password: PthfCj2UZ%
-    vendor: sangfor
-    type: firewall
-
-  # 华三设备模板
-  - name: fw-core-02
-    host: 10.1.1.2
-    token: bbb
-    vendor: h3c
-    type: firewall
-
-  # 华为设备模板
-  - name: fw-core-03
-    host: 10.1.1.3
-    token: ccc
-    vendor: huawei
-    type: firewall
+# 多目标（/probe）模式的认证文件路径（推荐）
+# - Prometheus 侧通过 /probe?auth=<id> 引用认证信息，不直接传 token/密码
+# - 文件内容格式参考 README.md 的 auth.yaml 示例
+auth_file: "/etc/netsec/auth.yaml"

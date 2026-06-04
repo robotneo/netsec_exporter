@@ -33,8 +33,7 @@ type Config struct {
 		Listen string `yaml:"listen"`
 	} `yaml:"metrics"`
 
-	AuthFile string        `yaml:"auth_file"`
-	Devices  []core.Device `yaml:"devices"`
+	AuthFile string `yaml:"auth_file"`
 }
 
 var config Config
@@ -96,15 +95,6 @@ func loadAuths(authPath string) (map[string]authEntry, error) {
 		af.Auths = map[string]authEntry{}
 	}
 	return af.Auths, nil
-}
-
-func findDeviceByTarget(target string, vendor string, devType string) (core.Device, bool) {
-	for _, d := range config.Devices {
-		if d.Host == target && d.Vendor == vendor && d.Type == devType {
-			return d, true
-		}
-	}
-	return core.Device{}, false
 }
 
 var metricHelp = map[string]string{
@@ -332,16 +322,6 @@ func main() {
 	// core.Register(&collectors.H3C{})    // 暂不纳入采集，仅作示例
 	// core.Register(&collectors.Huawei{}) // 暂不纳入采集，仅作示例
 
-	jobs := make(chan core.Job, 200)
-
-	// worker pool
-	for i := 0; i < config.Global.Workers; i++ {
-		go core.Worker(jobs)
-	}
-
-	// scheduler
-	go core.Scheduler(config.Devices, jobs, config.Global.Interval)
-
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
@@ -479,50 +459,29 @@ func main() {
 			Type:   devType,
 		}
 
-		if authID != "" {
-			a, ok := auths[authID]
-			if !ok {
-				ctx.String(http.StatusBadRequest, "unknown auth: %s\n", authID)
-				return
-			}
-			if a.Vendor != "" && a.Vendor != vendor {
-				ctx.String(http.StatusBadRequest, "auth vendor mismatch: %s\n", authID)
-				return
-			}
-			if a.Type != "" && a.Type != devType {
-				ctx.String(http.StatusBadRequest, "auth type mismatch: %s\n", authID)
-				return
-			}
-			if dev.Token == "" {
-				dev.Token = a.Token
-			}
-			if dev.Username == "" {
-				dev.Username = a.Username
-			}
-			if dev.Password == "" {
-				dev.Password = a.Password
-			}
+		if authID == "" {
+			ctx.String(http.StatusBadRequest, "missing required param: auth\n")
+			return
 		}
+		a, ok := auths[authID]
+		if !ok {
+			ctx.String(http.StatusBadRequest, "unknown auth: %s\n", authID)
+			return
+		}
+		if a.Vendor != "" && a.Vendor != vendor {
+			ctx.String(http.StatusBadRequest, "auth vendor mismatch: %s\n", authID)
+			return
+		}
+		if a.Type != "" && a.Type != devType {
+			ctx.String(http.StatusBadRequest, "auth type mismatch: %s\n", authID)
+			return
+		}
+		dev.Token = a.Token
+		dev.Username = a.Username
+		dev.Password = a.Password
 
 		if dev.Token == "" && dev.Username == "" && dev.Password == "" {
-			if fromConfig, ok := findDeviceByTarget(target, vendor, devType); ok {
-				if dev.Name == target && strings.TrimSpace(fromConfig.Name) != "" {
-					dev.Name = fromConfig.Name
-				}
-				if dev.Token == "" {
-					dev.Token = fromConfig.Token
-				}
-				if dev.Username == "" {
-					dev.Username = fromConfig.Username
-				}
-				if dev.Password == "" {
-					dev.Password = fromConfig.Password
-				}
-			}
-		}
-
-		if dev.Token == "" && dev.Username == "" && dev.Password == "" {
-			ctx.String(http.StatusBadRequest, "missing credentials: please provide auth (recommended) or configure credentials in config.yaml devices\n")
+			ctx.String(http.StatusBadRequest, "auth has no credentials: %s\n", authID)
 			return
 		}
 
