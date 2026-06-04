@@ -52,6 +52,127 @@ devices:
     type: firewall          # 类型：firewall (深信服防火墙)
 ```
 
+### 3.1 多目标（/probe）模式与认证配置
+Exporter 支持类似 `snmp_exporter` 的多目标采集模式：Prometheus 在 scrape 时通过 query params 指定 `target/vendor/type/auth`，Exporter 在单次请求内完成采集并返回该目标的指标。
+
+#### 认证信息放置与引用（推荐）
+建议将认证信息放在 Exporter 本机文件（`auth_file`）中，通过 `auth` 参数引用，避免把 token/密码写入 Prometheus 配置或 URL。
+
+`config.yaml` 增加：
+```yaml
+auth_file: /etc/netsec/auth.yaml
+```
+
+`/etc/netsec/auth.yaml` 示例：
+```yaml
+auths:
+  sangfor_admin:
+    vendor: sangfor
+    type: firewall
+    username: admin
+    password: your-password
+
+  dbapp_token_a:
+    vendor: dbapp
+    type: firewall
+    token: your-api-token
+```
+
+#### /probe 参数说明
+- `target`：设备 IP/地址（必填）
+- `vendor`：品牌（必填，例如 `sangfor`/`dbapp`）
+- `type`：设备类型（必填，例如 `firewall`）
+- `auth`：认证引用 ID（可选但推荐，来自 `auth_file`）
+- `name`：设备名称（可选，不填默认使用 target）
+
+#### Web 调试页
+可访问 `http://<exporter>:9808/debug` 在页面中填写 `target/vendor/type/auth` 并直接发起探测请求。
+
+### 3.2 Prometheus 配置示例（static_configs）
+以下示例使用 `static_configs` 管理多台设备，并通过 relabel 将 labels 转成 `/probe` 参数：
+
+```yaml
+scrape_configs:
+  - job_name: netsec_fw_probe
+    metrics_path: /probe
+    static_configs:
+      - targets:
+          - 192.168.254.1
+          - 192.168.254.2
+        labels:
+          vendor: sangfor
+          type: firewall
+          auth: sangfor_admin
+
+      - targets:
+          - 10.18.130.212
+        labels:
+          vendor: dbapp
+          type: firewall
+          auth: dbapp_token_a
+
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [vendor]
+        target_label: __param_vendor
+      - source_labels: [type]
+        target_label: __param_type
+      - source_labels: [auth]
+        target_label: __param_auth
+      - source_labels: [__address__]
+        target_label: host
+      - source_labels: [__address__]
+        target_label: device
+      - target_label: __address__
+        replacement: netsec-exporter:9808
+```
+
+### 3.3 Prometheus 配置示例（file_sd_configs）
+适合大量设备时，将 targets 放入文件由 Prometheus 自动加载：
+
+Prometheus 配置：
+```yaml
+scrape_configs:
+  - job_name: netsec_fw_probe
+    metrics_path: /probe
+    file_sd_configs:
+      - files:
+          - /etc/prometheus/netsec_targets/*.yaml
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [vendor]
+        target_label: __param_vendor
+      - source_labels: [type]
+        target_label: __param_type
+      - source_labels: [auth]
+        target_label: __param_auth
+      - source_labels: [name]
+        target_label: device
+      - source_labels: [__address__]
+        target_label: host
+      - target_label: __address__
+        replacement: netsec-exporter:9808
+```
+
+`/etc/prometheus/netsec_targets/fw.yaml` 示例：
+```yaml
+- targets: ["192.168.254.1"]
+  labels:
+    name: sangfor-fw-01
+    vendor: sangfor
+    type: firewall
+    auth: sangfor_admin
+
+- targets: ["10.18.130.212"]
+  labels:
+    name: dbapp-fw-01
+    vendor: dbapp
+    type: firewall
+    auth: dbapp_token_a
+```
+
 ### 3. 自动安装服务
 执行以下命令自动生成并安装 Systemd 服务文件（**需要 root 权限**）：
 ```bash
@@ -90,6 +211,10 @@ systemctl stop netsec_exporter
 | `netsec_disk_usage_percent` | Gauge | 硬盘使用率（百分比） | `device, host, vendor, type` |
 | `netsec_session_concurrent` | Gauge | 实时并发会话数（单位：session） | `device, host, vendor, type` |
 | `netsec_session_creation_rate` | Gauge | 实时新建会话数（单位：session） | `device, host, vendor, type` |
+| `netsec_interface_send_bits` | Gauge | 接口总实时发送速率（单位：bits） | `device, host, vendor, type` |
+| `netsec_interface_recv_bits` | Gauge | 接口总实时接收速率（单位：bits） | `device, host, vendor, type` |
+| `netsec_ha_enabled` | Gauge | HA 是否开启（1:开启, 0:关闭） | `device, host, vendor, type` |
+| `netsec_ha_mode` | Gauge | HA 模式（ACTIVE-ACTIVE=1, ACTIVE-PASSIVE=2, MIRROR=3） | `device, host, vendor, type` |
 | `netsec_scrape_duration_seconds` | Gauge | 每次采集耗时（秒） | `device, host, vendor, type` |
 
 ## 开发者指南
