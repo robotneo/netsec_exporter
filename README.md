@@ -78,7 +78,7 @@ auths:
 - `name`：设备名称（可选，不填默认使用 target）
 
 #### Web 调试页
-可访问 `http://<exporter>:9808/debug` 在页面中填写 `target/vendor/type/auth` 并直接发起探测请求。
+可访问 `http://<exporter>:9808/probe`（不带 query 参数）在页面中填写 `target/vendor/type/auth` 并直接发起探测请求。
 
 ### 4. Prometheus 配置示例（static_configs）
 以下示例使用 `static_configs` 管理多台设备，并通过 relabel 将 labels 转成 `/probe` 参数：
@@ -113,9 +113,9 @@ scrape_configs:
       - source_labels: [auth]
         target_label: __param_auth
       - source_labels: [__address__]
-        target_label: host
+        target_label: instance
       - source_labels: [__address__]
-        target_label: device
+        target_label: device_name
       - target_label: __address__
         replacement: netsec-exporter:9808
 ```
@@ -141,9 +141,9 @@ scrape_configs:
       - source_labels: [auth]
         target_label: __param_auth
       - source_labels: [name]
-        target_label: device
+        target_label: device_name
       - source_labels: [__address__]
-        target_label: host
+        target_label: instance
       - target_label: __address__
         replacement: netsec-exporter:9808
 ```
@@ -195,24 +195,37 @@ systemctl stop netsec_exporter
 ## HTTP 接口
 - `/metrics`：Exporter 自身指标（Prometheus 默认 handler）
 - `/probe`：多目标采集入口（Prometheus 通过 scrape_configs 传入 target/vendor/type/auth）
-- `/debug`：Web 调试页（表单方式调用 /probe）
+- `/probe`（不带 query 参数）：Web 调试页（表单方式调用 /probe）
 
 ## 导出指标说明
 
 | 指标名称 | 类型 | 含义 | 标签 |
 | :--- | :--- | :--- | :--- |
-| `netsec_device_up` | Gauge | 设备在线状态 (1:正常, 0:异常) | `device, host, vendor, type` |
-| `netsec_iplink_status` | Gauge | IPLink 状态 (1:正常, 0:异常) | `device, host, vendor, type, name, interface, destination` |
-| `netsec_cpu_usage_percent` | Gauge | CPU 使用率（百分比） | `device, host, vendor, type` |
-| `netsec_memory_usage_percent` | Gauge | 内存使用率（百分比） | `device, host, vendor, type` |
-| `netsec_disk_usage_percent` | Gauge | 硬盘使用率（百分比） | `device, host, vendor, type` |
-| `netsec_session_concurrent` | Gauge | 实时并发会话数（单位：session） | `device, host, vendor, type` |
-| `netsec_session_creation_rate` | Gauge | 实时新建会话数（单位：session） | `device, host, vendor, type` |
-| `netsec_interface_send_bits` | Gauge | 接口总实时发送速率（单位：bits） | `device, host, vendor, type` |
-| `netsec_interface_recv_bits` | Gauge | 接口总实时接收速率（单位：bits） | `device, host, vendor, type` |
-| `netsec_ha_enabled` | Gauge | HA 是否开启（1:开启, 0:关闭） | `device, host, vendor, type` |
-| `netsec_ha_mode` | Gauge | HA 模式（ACTIVE-ACTIVE=1, ACTIVE-PASSIVE=2, MIRROR=3） | `device, host, vendor, type` |
-| `netsec_scrape_duration_seconds` | Gauge | 每次采集耗时（秒） | `device, host, vendor, type` |
+| `netsec_device_up` | Gauge | 设备在线状态 | `device_name, instance, vendor, type` |
+| `netsec_scrape_duration_seconds` | Gauge | 每次采集耗时（秒） | `device_name, instance, vendor, type` |
+| `netsec_cpu_usage_percent` | Gauge | CPU 使用率（百分比） | `device_name, instance, vendor, type` |
+| `netsec_memory_usage_percent` | Gauge | 内存使用率（百分比） | `device_name, instance, vendor, type` |
+| `netsec_disk_usage_percent` | Gauge | 硬盘使用率（百分比） | `device_name, instance, vendor, type` |
+| `netsec_session_concurrent` | Gauge | 实时并发会话数（REAL-TIME） | `device_name, instance, vendor, type` |
+| `netsec_session_creation_rate` | Gauge | 实时新建会话数（REAL-TIME） | `device_name, instance, vendor, type` |
+| `netsec_ha_enabled` | Gauge | HA 是否开启（1:开启, 0:关闭） | `device_name, instance, vendor, type` |
+| `netsec_ha_mode` | Gauge | HA 模式（ACTIVE-ACTIVE=1, ACTIVE-PASSIVE=2, MIRROR=3） | `device_name, instance, vendor, type` |
+| `netsec_interface_send_bits` | Gauge | 设备维度：总实时发送速率（bits） | `device_name, instance, vendor, type` |
+| `netsec_interface_recv_bits` | Gauge | 设备维度：总实时接收速率（bits） | `device_name, instance, vendor, type` |
+| `netsec_interface_physical_state` | Gauge | 接口物理状态（true=1, false=0） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_link_state` | Gauge | 接口链路状态（true=1, false=0） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_mtu_bytes` | Gauge | 接口 MTU（bytes） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_ping_up` | Gauge | 接口 Ping 开关/可用（true=1, false=0） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_role` | Gauge | 接口角色（WAN=1, 非 WAN=0） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_media_type` | Gauge | 介质类型（TP=0, FIBER=1） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_category` | Gauge | 接口类别（PHYSICALIF=1, else=0） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_layer_mode` | Gauge | 接口层模式（BRIDGE=0, ROUTE=1） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_speed_mbps` | Gauge | 双工下协商速率（Mbps） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_traffic_out_bps` | Gauge | 接口出方向速率（bps） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_traffic_in_bps` | Gauge | 接口入方向速率（bps） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_traffic_out_packets_total` | Gauge | 接口出方向包数（当前值） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_traffic_in_packets_total` | Gauge | 接口入方向包数（当前值） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
+| `netsec_iplink_status` | Gauge | IPLink 状态（1:正常, 0:异常） | `device_name, instance, vendor, type, name, interface, destination` |
 
 ## 开发者指南
 
