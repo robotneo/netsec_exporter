@@ -53,9 +53,9 @@ func CollectCPUCurrentPercent(c *client.Client, sess client.Session, dev core.De
 			Name:  "netsec_cpu_usage_percent",
 			Value: cpu,
 			Labels: map[string]string{
-				"device": dev.Name,
-				"vendor": dev.Vendor,
-				"type":   dev.Type,
+				"device_name": dev.Name,
+				"vendor":      dev.Vendor,
+				"type":        dev.Type,
 			},
 		},
 	}, nil

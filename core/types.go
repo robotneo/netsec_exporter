@@ -19,3 +19,25 @@ type Metric struct {
 type Job struct {
 	Device Device
 }
+
+func NormalizeCommonLabels(labels map[string]string) map[string]string {
+	if labels == nil {
+		return labels
+	}
+
+	if v, ok := labels["device"]; ok {
+		if _, exists := labels["device_name"]; !exists {
+			labels["device_name"] = v
+		}
+		delete(labels, "device")
+	}
+
+	if v, ok := labels["host"]; ok {
+		if _, exists := labels["instance"]; !exists {
+			labels["instance"] = v
+		}
+		delete(labels, "host")
+	}
+
+	return labels
+}

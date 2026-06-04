@@ -87,9 +87,9 @@ func collectSessionNumber(c *client.Client, sess client.Session, dev core.Device
 			Name:  metricName,
 			Value: value,
 			Labels: map[string]string{
-				"device": dev.Name,
-				"vendor": dev.Vendor,
-				"type":   dev.Type,
+				"device_name": dev.Name,
+				"vendor":      dev.Vendor,
+				"type":        dev.Type,
 			},
 		},
 	}, nil

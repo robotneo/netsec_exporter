@@ -10,7 +10,7 @@ var (
 			Name: "netsec_iplink_status",
 			Help: "Network security device IP link status",
 		},
-		[]string{"device", "host", "name", "interface", "destination", "vendor", "type"},
+		[]string{"device_name", "instance", "name", "interface", "destination", "vendor", "type"},
 	)
 
 	cpuUsagePercent = prometheus.NewGaugeVec(
@@ -18,7 +18,7 @@ var (
 			Name: "netsec_cpu_usage_percent",
 			Help: "Network security device CPU usage percent",
 		},
-		[]string{"device", "host", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "type"},
 	)
 
 	memoryUsagePercent = prometheus.NewGaugeVec(
@@ -26,7 +26,7 @@ var (
 			Name: "netsec_memory_usage_percent",
 			Help: "Network security device memory usage percent",
 		},
-		[]string{"device", "host", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "type"},
 	)
 
 	diskUsagePercent = prometheus.NewGaugeVec(
@@ -34,7 +34,7 @@ var (
 			Name: "netsec_disk_usage_percent",
 			Help: "Network security device disk usage percent",
 		},
-		[]string{"device", "host", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "type"},
 	)
 
 	concurrentSessions = prometheus.NewGaugeVec(
@@ -42,7 +42,7 @@ var (
 			Name: "netsec_session_concurrent",
 			Help: "Network security device concurrent sessions",
 		},
-		[]string{"device", "host", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "type"},
 	)
 
 	newSessions = prometheus.NewGaugeVec(
@@ -50,7 +50,7 @@ var (
 			Name: "netsec_session_creation_rate",
 			Help: "Network security device session creation rate (REAL-TIME)",
 		},
-		[]string{"device", "host", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "type"},
 	)
 
 	interfaceSendBits = prometheus.NewGaugeVec(
@@ -58,7 +58,7 @@ var (
 			Name: "netsec_interface_send_bits",
 			Help: "Network security device interface total realtime send throughput (bits)",
 		},
-		[]string{"device", "host", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "type"},
 	)
 
 	interfaceRecvBits = prometheus.NewGaugeVec(
@@ -66,10 +66,10 @@ var (
 			Name: "netsec_interface_recv_bits",
 			Help: "Network security device interface total realtime receive throughput (bits)",
 		},
-		[]string{"device", "host", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "type"},
 	)
 
-	interfaceLabelNames = []string{"device", "host", "interface", "description", "zone", "mac", "ipaddress", "vendor", "type"}
+	interfaceLabelNames = []string{"device_name", "instance", "interface", "description", "zone", "mac", "ipaddress", "vendor", "type"}
 
 	interfacePhysicalStatus = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
@@ -168,7 +168,7 @@ var (
 			Name: "netsec_ha_enabled",
 			Help: "Network security device HA enabled (1 enabled, 0 disabled)",
 		},
-		[]string{"device", "host", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "type"},
 	)
 
 	haMode = prometheus.NewGaugeVec(
@@ -176,7 +176,7 @@ var (
 			Name: "netsec_ha_mode",
 			Help: "Network security device HA mode (ACTIVE-ACTIVE=1, ACTIVE-PASSIVE=2, MIRROR=3)",
 		},
-		[]string{"device", "host", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "type"},
 	)
 
 	deviceUp = prometheus.NewGaugeVec(
@@ -184,7 +184,7 @@ var (
 			Name: "netsec_device_up",
 			Help: "Network security device status",
 		},
-		[]string{"device", "host", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "type"},
 	)
 
 	scrapeDuration = prometheus.NewGaugeVec(
@@ -192,7 +192,7 @@ var (
 			Name: "netsec_scrape_duration_seconds",
 			Help: "Network security device scrape duration",
 		},
-		[]string{"device", "host", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "type"},
 	)
 )
 

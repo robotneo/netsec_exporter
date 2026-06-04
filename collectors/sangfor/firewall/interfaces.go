@@ -73,9 +73,9 @@ func CollectInterfaceTrafficBits(c *client.Client, sess client.Session, dev core
 	}
 
 	labels := map[string]string{
-		"device": dev.Name,
-		"vendor": dev.Vendor,
-		"type":   dev.Type,
+		"device_name": dev.Name,
+		"vendor":      dev.Vendor,
+		"type":        dev.Type,
 	}
 
 	if strings.TrimSpace(tr.Data.Data.RealTimeSpeed.SendSpeed) != "" || strings.TrimSpace(tr.Data.Data.RealTimeSpeed.RecvSpeed) != "" {

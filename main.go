@@ -160,10 +160,10 @@ func (c *probeCollector) emitProbeResult(ch chan<- prometheus.Metric, start time
 	duration := time.Since(start).Seconds()
 
 	labels := map[string]string{
-		"device": c.device.Name,
-		"host":   c.device.Host,
-		"vendor": c.device.Vendor,
-		"type":   c.device.Type,
+		"device_name": c.device.Name,
+		"instance":    c.device.Host,
+		"vendor":      c.device.Vendor,
+		"type":        c.device.Type,
 	}
 
 	up := 1.0
@@ -179,10 +179,10 @@ func (c *probeCollector) emitProbeMetrics(ch chan<- prometheus.Metric, start tim
 	duration := time.Since(start).Seconds()
 
 	baseLabels := map[string]string{
-		"device": c.device.Name,
-		"host":   c.device.Host,
-		"vendor": c.device.Vendor,
-		"type":   c.device.Type,
+		"device_name": c.device.Name,
+		"instance":    c.device.Host,
+		"vendor":      c.device.Vendor,
+		"type":        c.device.Type,
 	}
 
 	up := 1.0
@@ -200,11 +200,12 @@ func (c *probeCollector) emitProbeMetrics(ch chan<- prometheus.Metric, start tim
 		if all[i].Labels == nil {
 			all[i].Labels = map[string]string{}
 		}
-		if _, ok := all[i].Labels["device"]; !ok {
-			all[i].Labels["device"] = c.device.Name
+		all[i].Labels = core.NormalizeCommonLabels(all[i].Labels)
+		if _, ok := all[i].Labels["device_name"]; !ok {
+			all[i].Labels["device_name"] = c.device.Name
 		}
-		if _, ok := all[i].Labels["host"]; !ok {
-			all[i].Labels["host"] = c.device.Host
+		if _, ok := all[i].Labels["instance"]; !ok {
+			all[i].Labels["instance"] = c.device.Host
 		}
 		if _, ok := all[i].Labels["vendor"]; !ok {
 			all[i].Labels["vendor"] = c.device.Vendor

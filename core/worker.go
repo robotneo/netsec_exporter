@@ -26,13 +26,12 @@ func Worker(jobs <-chan Job) {
 			metrics, err := c.Collect(job.Device)
 			duration := time.Since(start).Seconds()
 
-			// Set scrape duration metric
 			SetMetric(Metric{
 				Name:  "netsec_scrape_duration_seconds",
 				Value: duration,
 				Labels: map[string]string{
-					"device": job.Device.Name,
-					"host":   job.Device.Host,
+					"device_name": job.Device.Name,
+					"instance":    job.Device.Host,
 					"vendor": job.Device.Vendor,
 					"type":   job.Device.Type,
 				},
@@ -44,8 +43,8 @@ func Worker(jobs <-chan Job) {
 					Name:  "netsec_device_up",
 					Value: 0,
 					Labels: map[string]string{
-						"device": job.Device.Name,
-						"host":   job.Device.Host,
+						"device_name": job.Device.Name,
+						"instance":    job.Device.Host,
 						"vendor": job.Device.Vendor,
 						"type":   job.Device.Type,
 					},
@@ -58,23 +57,23 @@ func Worker(jobs <-chan Job) {
 				Name:  "netsec_device_up",
 				Value: 1,
 				Labels: map[string]string{
-					"device": job.Device.Name,
-					"host":   job.Device.Host,
+					"device_name": job.Device.Name,
+					"instance":    job.Device.Host,
 					"vendor": job.Device.Vendor,
 					"type":   job.Device.Type,
 				},
 			})
 
 			for _, m := range metrics {
-				// Ensure device, host, vendor and type labels are present if not already set by collector
 				if m.Labels == nil {
 					m.Labels = make(map[string]string)
 				}
-				if _, ok := m.Labels["device"]; !ok {
-					m.Labels["device"] = job.Device.Name
+				m.Labels = NormalizeCommonLabels(m.Labels)
+				if _, ok := m.Labels["device_name"]; !ok {
+					m.Labels["device_name"] = job.Device.Name
 				}
-				if _, ok := m.Labels["host"]; !ok {
-					m.Labels["host"] = job.Device.Host
+				if _, ok := m.Labels["instance"]; !ok {
+					m.Labels["instance"] = job.Device.Host
 				}
 				if _, ok := m.Labels["vendor"]; !ok {
 					m.Labels["vendor"] = job.Device.Vendor

@@ -63,9 +63,9 @@ func CollectMemoryUsagePercent(c *client.Client, sess client.Session, dev core.D
 			Name:  "netsec_memory_usage_percent",
 			Value: mr.Data.MemoryUsage,
 			Labels: map[string]string{
-				"device": dev.Name,
-				"vendor": dev.Vendor,
-				"type":   dev.Type,
+				"device_name": dev.Name,
+				"vendor":      dev.Vendor,
+				"type":        dev.Type,
 			},
 		},
 	}, nil

@@ -77,9 +77,9 @@ func CollectHAStatus(c *client.Client, sess client.Session, dev core.Device) ([]
 	}
 
 	labels := map[string]string{
-		"device": dev.Name,
-		"vendor": dev.Vendor,
-		"type":   dev.Type,
+		"device_name": dev.Name,
+		"vendor":      dev.Vendor,
+		"type":        dev.Type,
 	}
 
 	return []core.Metric{
