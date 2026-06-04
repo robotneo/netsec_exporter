@@ -324,73 +324,263 @@ func main() {
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+	r.GET("/", func(ctx *gin.Context) {
+		page := `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NetSec Exporter</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", "Liberation Sans", sans-serif; margin: 16px; }
+    a { text-decoration: none; }
+    .card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; max-width: 720px; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .link { display: inline-block; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; }
+    .muted { color: #666; font-size: 12px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <h1>NetSec Exporter</h1>
+  <div class="card">
+    <div class="row">
+      <a class="link" href="/metrics">/metrics</a>
+      <a class="link" href="/probe">/probe</a>
+    </div>
+    <div class="muted">/metrics：采集器本身指标；/probe：多目标采集入口（无参数时为调试页）。</div>
+  </div>
+</body>
+</html>`
+		ctx.Data(http.StatusOK, "text/html; charset=utf-8", []byte(page))
+	})
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
-	r.GET("/debug", func(ctx *gin.Context) {
+
+	debugPage := func(ctx *gin.Context) {
 		page := `<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>netsec_exporter Debug</title>
+  <title>NetSec Exporter Debug</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", "Liberation Sans", sans-serif; margin: 16px; }
-    .row { display: flex; gap: 12px; flex-wrap: wrap; }
-    .field { display: flex; flex-direction: column; gap: 6px; min-width: 260px; }
-    input, select { padding: 8px; font-size: 14px; }
-    button { padding: 8px 12px; font-size: 14px; cursor: pointer; }
-    pre { background: #0b1020; color: #e6e6e6; padding: 12px; overflow: auto; border-radius: 6px; }
-    .muted { color: #666; font-size: 12px; }
+    :root {
+      --bg0: #f8fafc;
+      --bg1: #eef2ff;
+      --card: rgba(255,255,255,.75);
+      --stroke: rgba(15,23,42,.10);
+      --text: #0f172a;
+      --muted: rgba(15,23,42,.65);
+      --primary: #2563eb;
+      --primary2: #7c3aed;
+      --shadow: 0 16px 45px rgba(2,6,23,.12);
+      --ring: 0 0 0 4px rgba(37,99,235,.18);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      color: var(--text);
+      background: radial-gradient(900px circle at 15% 10%, rgba(124,58,237,.20), transparent 60%),
+                  radial-gradient(800px circle at 80% 20%, rgba(37,99,235,.18), transparent 55%),
+                  linear-gradient(180deg, var(--bg0), var(--bg1));
+    }
+    a { color: inherit; text-decoration: none; }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 22px 18px 34px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .brand { display: flex; flex-direction: column; gap: 6px; }
+    .title { font-size: 22px; font-weight: 750; letter-spacing: .2px; margin: 0; }
+    .subtitle { color: var(--muted); font-size: 13px; margin: 0; line-height: 1.4; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.65);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 24px rgba(2,6,23,.08);
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .status-dot { width: 8px; height: 8px; border-radius: 999px; background: #94a3b8; }
+    .status-dot.ok { background: #10b981; }
+    .status-dot.loading { background: #2563eb; }
+    .status-dot.err { background: #ef4444; }
+
+    .grid { margin-top: 16px; display: grid; grid-template-columns: 1fr; gap: 14px; }
+    @media (min-width: 980px) { .grid { grid-template-columns: 0.9fr 1.1fr; } }
+
+    .card {
+      border: 1px solid var(--stroke);
+      background: var(--card);
+      backdrop-filter: blur(12px);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card-hd { padding: 14px 14px 0; }
+    .card-bd { padding: 14px; }
+    .card-title { margin: 0; font-size: 14px; font-weight: 700; }
+    .card-desc { margin: 6px 0 0; font-size: 12px; color: var(--muted); line-height: 1.45; }
+
+    .form { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 4px; }
+    @media (min-width: 640px) { .form { grid-template-columns: 1fr 1fr; } }
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field.wide { grid-column: 1 / -1; }
+    label { font-size: 12px; color: var(--muted); letter-spacing: .2px; }
+    input, select {
+      appearance: none;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.85);
+      border-radius: 10px;
+      padding: 10px 11px;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: box-shadow .18s ease, border-color .18s ease, transform .18s ease;
+    }
+    input:focus, select:focus { box-shadow: var(--ring); border-color: rgba(37,99,235,.55); }
+
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    button {
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.75);
+      border-radius: 11px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
+    }
+    button:hover { transform: translateY(-1px); box-shadow: 0 10px 30px rgba(2,6,23,.12); }
+    button:active { transform: translateY(0); box-shadow: none; }
+    .btn-primary {
+      border-color: rgba(37,99,235,.35);
+      color: white;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+    }
+    .btn-ghost { background: rgba(255,255,255,.55); }
+
+    .split { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    pre {
+      margin: 0;
+      font-family: var(--mono);
+      background: rgba(241,245,249,.85);
+      border: 1px solid var(--stroke);
+      border-radius: 12px;
+      padding: 12px;
+      overflow: auto;
+      max-height: 420px;
+      color: #0b1220;
+      line-height: 1.45;
+      font-size: 12px;
+    }
+    .kv { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 8px; }
+    .kv .k { font-size: 12px; color: var(--muted); }
+    .kv .v { font-size: 12px; color: var(--muted); }
+    .hint { margin-top: 10px; font-size: 12px; color: var(--muted); }
   </style>
 </head>
 <body>
-  <h2>netsec_exporter 调试</h2>
-  <div class="muted">填写 target/vendor/type/auth 后点击 Probe，即可请求 /probe 并展示返回的 metrics。</div>
-  <div style="height: 12px"></div>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">
+        <h1 class="title">NetSec Exporter 调试</h1>
+        <p class="subtitle">填写 target/vendor/type/auth 后点击 Probe，即可请求 /probe 并展示返回的 metrics。</p>
+      </div>
+      <div class="pill">
+        <span id="statusDot" class="status-dot"></span>
+        <span id="statusText">Idle</span>
+      </div>
+    </div>
 
-  <div class="row">
-    <div class="field">
-      <label for="target">target</label>
-      <input id="target" placeholder="192.168.254.1" />
-    </div>
-    <div class="field">
-      <label for="vendor">vendor</label>
-      <input id="vendor" placeholder="sangfor / dbapp" list="vendorList" />
-      <datalist id="vendorList">
-        <option value="sangfor"></option>
-        <option value="dbapp"></option>
-      </datalist>
-    </div>
-    <div class="field">
-      <label for="type">type</label>
-      <input id="type" placeholder="firewall" list="typeList" />
-      <datalist id="typeList">
-        <option value="firewall"></option>
-      </datalist>
-    </div>
-    <div class="field">
-      <label for="auth">auth</label>
-      <input id="auth" placeholder="auth id in auth_file (e.g. sangfor_admin)" />
-    </div>
-    <div class="field">
-      <label for="name">name (optional)</label>
-      <input id="name" placeholder="sangfor-fw-01" />
+    <div class="grid">
+      <div class="card">
+        <div class="card-hd">
+          <p class="card-title">Probe 参数</p>
+          <p class="card-desc">vendor/type 用于选择采集插件；auth 从 auth_file 中选择凭据。</p>
+        </div>
+        <div class="card-bd">
+          <div class="form">
+            <div class="field wide">
+              <label for="target">target</label>
+              <input id="target" placeholder="192.168.254.1" />
+            </div>
+            <div class="field">
+              <label for="vendor">vendor</label>
+              <input id="vendor" placeholder="sangfor / dbapp" list="vendorList" />
+              <datalist id="vendorList">
+                <option value="sangfor"></option>
+                <option value="dbapp"></option>
+              </datalist>
+            </div>
+            <div class="field">
+              <label for="type">type</label>
+              <input id="type" placeholder="firewall" list="typeList" />
+              <datalist id="typeList">
+                <option value="firewall"></option>
+              </datalist>
+            </div>
+            <div class="field">
+              <label for="auth">auth</label>
+              <input id="auth" placeholder="auth id in auth_file (e.g. sangfor_admin)" />
+            </div>
+            <div class="field">
+              <label for="name">name (optional)</label>
+              <input id="name" placeholder="sangfor-fw-01" />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn-primary" id="btnProbe">Probe</button>
+            <button class="btn-ghost" id="btnOpen">打开 /probe</button>
+          </div>
+
+          <div class="hint">
+            快捷入口：<a href="/metrics">/metrics</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="split">
+        <div class="card">
+          <div class="card-bd">
+            <div class="kv">
+              <div class="k">Request URL</div>
+              <div class="v">GET</div>
+            </div>
+            <pre id="url"></pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-bd">
+            <div class="kv">
+              <div class="k">Response</div>
+              <div class="v" id="respMeta"></div>
+            </div>
+            <pre id="out"></pre>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
-  <div style="height: 12px"></div>
-  <div class="row">
-    <button id="btnProbe">Probe (fetch)</button>
-    <button id="btnOpen">Open /probe</button>
-  </div>
-
-  <div style="height: 12px"></div>
-  <div class="muted">Request URL</div>
-  <pre id="url"></pre>
-
-  <div class="muted">Response</div>
-  <pre id="out"></pre>
 
 <script>
+  function setStatus(state, text) {
+    const dot = document.getElementById('statusDot');
+    const t = document.getElementById('statusText');
+    dot.className = 'status-dot' + (state ? ' ' + state : '');
+    t.textContent = text || 'Idle';
+  }
+
   function buildURL() {
     const target = document.getElementById('target').value.trim();
     const vendor = document.getElementById('vendor').value.trim();
@@ -413,31 +603,45 @@ func main() {
   ['target','vendor','type','auth','name'].forEach(id => {
     document.getElementById(id).addEventListener('input', refreshURL);
   });
+  setStatus('', 'Idle');
   refreshURL();
 
   document.getElementById('btnOpen').addEventListener('click', () => {
     const u = buildURL();
     document.getElementById('out').textContent = '';
+    document.getElementById('respMeta').textContent = '';
     window.open(u, '_blank');
   });
 
   document.getElementById('btnProbe').addEventListener('click', async () => {
     const u = buildURL();
+    setStatus('loading', 'Loading');
+    document.getElementById('respMeta').textContent = '';
     document.getElementById('out').textContent = 'Loading...';
     try {
       const resp = await fetch(u, { method: 'GET' });
       const text = await resp.text();
+      document.getElementById('respMeta').textContent = resp.status + ' ' + (resp.ok ? 'OK' : 'ERROR');
       document.getElementById('out').textContent = text;
+      setStatus(resp.ok ? 'ok' : 'err', resp.ok ? 'OK' : 'Error');
     } catch (e) {
+      document.getElementById('respMeta').textContent = 'FETCH ERROR';
       document.getElementById('out').textContent = String(e);
+      setStatus('err', 'Error');
     }
   });
 </script>
 </body>
 </html>`
 		ctx.Data(http.StatusOK, "text/html; charset=utf-8", []byte(page))
-	})
+	}
+
 	r.GET("/probe", func(ctx *gin.Context) {
+		if strings.TrimSpace(ctx.Request.URL.RawQuery) == "" {
+			debugPage(ctx)
+			return
+		}
+
 		target := strings.TrimSpace(ctx.Query("target"))
 		vendor := strings.TrimSpace(ctx.Query("vendor"))
 		devType := strings.TrimSpace(ctx.Query("type"))
