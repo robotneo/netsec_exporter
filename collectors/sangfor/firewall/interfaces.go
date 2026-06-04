@@ -321,11 +321,11 @@ func CollectInterfaces(c *client.Client, sess client.Session, dev core.Device) (
 			var metrics []core.Metric
 			for _, eth := range eths {
 				baseLabels := map[string]string{
-					"interface":   eth.Name,
+					"if_name":     eth.Name,
 					"description": eth.Description,
 					"zone":        eth.Zone,
 					"mac":         eth.MAC,
-					"ipaddress":   "",
+					"ip_addr":     "",
 				}
 
 				if eth.PhysicalStatus && eth.LinkStatus && strings.EqualFold(strings.TrimSpace(eth.IPv4.IPv4Mode), "STATIC") {
@@ -342,7 +342,7 @@ func CollectInterfaces(c *client.Client, sess client.Session, dev core.Device) (
 						}
 					}
 					if len(ips) > 0 {
-						baseLabels["ipaddress"] = strings.Join(ips, ",")
+						baseLabels["ip_addr"] = strings.Join(ips, ",")
 					}
 				}
 
@@ -397,19 +397,19 @@ func CollectInterfaces(c *client.Client, sess client.Session, dev core.Device) (
 				}
 
 				metrics = append(metrics,
-					core.Metric{Name: "netsec_interface_physical_status", Value: boolTo01(eth.PhysicalStatus), Labels: baseLabels},
-					core.Metric{Name: "netsec_interface_link_status", Value: boolTo01(eth.LinkStatus), Labels: baseLabels},
-					core.Metric{Name: "netsec_interface_mtu", Value: eth.MTU, Labels: baseLabels},
-					core.Metric{Name: "netsec_interface_ping", Value: ping, Labels: baseLabels},
-					core.Metric{Name: "netsec_interface_wan_enable", Value: wanEnable, Labels: baseLabels},
-					core.Metric{Name: "netsec_interface_eth_tool_type", Value: ethToolType, Labels: baseLabels},
-					core.Metric{Name: "netsec_interface_if_type_physical", Value: ifTypePhysical, Labels: baseLabels},
-					core.Metric{Name: "netsec_interface_if_mode", Value: ifMode, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_physical_state", Value: boolTo01(eth.PhysicalStatus), Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_link_state", Value: boolTo01(eth.LinkStatus), Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_mtu_bytes", Value: eth.MTU, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_ping_up", Value: ping, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_role", Value: wanEnable, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_media_type", Value: ethToolType, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_category", Value: ifTypePhysical, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_layer_mode", Value: ifMode, Labels: baseLabels},
 					core.Metric{Name: "netsec_interface_speed_mbps", Value: eth.SpeedDuplex.Speed, Labels: baseLabels},
-					core.Metric{Name: "netsec_interface_send_speed_bits", Value: sendBps, Labels: baseLabels},
-					core.Metric{Name: "netsec_interface_recv_speed_bits", Value: recvBps, Labels: baseLabels},
-					core.Metric{Name: "netsec_interface_send_packets", Value: eth.SendPackets, Labels: baseLabels},
-					core.Metric{Name: "netsec_interface_recv_packets", Value: eth.RecvPackets, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_traffic_out_bps", Value: sendBps, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_traffic_in_bps", Value: recvBps, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_traffic_out_packets_total", Value: eth.SendPackets, Labels: baseLabels},
+					core.Metric{Name: "netsec_interface_traffic_in_packets_total", Value: eth.RecvPackets, Labels: baseLabels},
 				)
 			}
 
