@@ -123,4 +123,3 @@ func (m *SessionManager) GetOrLogin(dev core.Device) (Session, error) {
 
 	return sess, nil
 }
-
