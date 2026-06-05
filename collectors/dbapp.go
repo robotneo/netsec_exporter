@@ -13,11 +13,18 @@ import (
 type DBAPP struct {
 	once   sync.Once
 	client *dbappclient.Client
+
+	Timeout            time.Duration
+	InsecureSkipVerify bool
 }
 
 func (c *DBAPP) init() {
 	c.once.Do(func() {
-		c.client = dbappclient.New(10*time.Second, true)
+		timeout := c.Timeout
+		if timeout <= 0 {
+			timeout = 10 * time.Second
+		}
+		c.client = dbappclient.New(timeout, c.InsecureSkipVerify)
 	})
 }
 

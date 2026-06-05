@@ -33,10 +33,14 @@ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags='-s -w' -o net
 编辑 `config.yaml` 文件，配置全局参数与认证文件路径。
 ```yaml
 global:
-  interval: 60              # 采集周期（秒）（仅用于兼容字段，/probe 模式不会按 interval 定时采集）
   timeout: 10               # 请求超时（秒）
-  workers: 20               # 并发协程数（仅用于兼容字段，/probe 模式不使用 worker pool）
   insecure_skip_verify: true # 跳过 TLS 验证
+  max_concurrent_probes: 20 # /probe 最大并发数（用于保护 Exporter 与设备）
+  max_concurrent_probes_per_target: 1 # 单个 target 最大并发数（避免同一台设备被并发打爆）
+  enable_debug_page: true   # 是否开启 /probe 无参数时的 Web 调试页
+  auth_reload_interval_seconds: 5 # auth_file 热加载检测间隔（秒）
+  allowed_vendors: []       # 允许的 vendor 白名单（空表示不限制）
+  allowed_types: []         # 允许的 type 白名单（空表示不限制）
 
 metrics:
   listen: ":9808"

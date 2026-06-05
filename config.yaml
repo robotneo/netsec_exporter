@@ -1,12 +1,20 @@
 global:
-  # 采集周期（秒），系统每隔多少秒执行一轮全量采集
-  interval: 60
   # 请求超时时间（秒），API 调用最长等待时间
   timeout: 10
-  # 并发协程数，用于支持多设备高并发采集的任务池大小
-  workers: 20
   # 是否跳过 TLS 证书验证（内网设备自签名证书建议开启）
   insecure_skip_verify: true
+  # /probe 最大并发数（Prometheus 多目标并发抓取时用于保护 Exporter 与设备）
+  max_concurrent_probes: 20
+  # 单个 target 最大并发数（避免同一台设备被并发打爆）
+  max_concurrent_probes_per_target: 1
+  # 是否开启 /probe 无参数时的 Web 调试页
+  enable_debug_page: true
+  # auth_file 热加载检测间隔（秒）
+  auth_reload_interval_seconds: 5
+  # 允许的 vendor 白名单（空表示不限制）
+  allowed_vendors: []
+  # 允许的 type 白名单（空表示不限制）
+  allowed_types: []
 
 metrics:
   # Exporter 指标监听地址

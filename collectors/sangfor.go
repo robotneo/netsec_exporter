@@ -14,6 +14,9 @@ type Sangfor struct {
 	once   sync.Once
 	client *sangforclient.Client
 	sm     *sangforclient.SessionManager
+
+	Timeout            time.Duration
+	InsecureSkipVerify bool
 }
 
 func (c *Sangfor) Name() string {
@@ -37,7 +40,11 @@ func (c *Sangfor) Collect(dev core.Device) ([]core.Metric, error) {
 
 func (c *Sangfor) init() {
 	c.once.Do(func() {
-		c.client = sangforclient.New(10*time.Second, true)
+		timeout := c.Timeout
+		if timeout <= 0 {
+			timeout = 10 * time.Second
+		}
+		c.client = sangforclient.New(timeout, c.InsecureSkipVerify)
 		c.sm = sangforclient.NewSessionManager(c.client, 10*time.Minute)
 	})
 }

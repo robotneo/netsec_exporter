@@ -5,11 +5,14 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"netsec_exporter/collectors"
@@ -23,10 +26,14 @@ import (
 
 type Config struct {
 	Global struct {
-		Interval           int  `yaml:"interval"`
-		Timeout            int  `yaml:"timeout"`
-		Workers            int  `yaml:"workers"`
-		InsecureSkipVerify bool `yaml:"insecure_skip_verify"`
+		Timeout                   int      `yaml:"timeout"`
+		InsecureSkipVerify        bool     `yaml:"insecure_skip_verify"`
+		MaxConcurrentProbes       int      `yaml:"max_concurrent_probes"`
+		MaxConcurrentPerTarget    int      `yaml:"max_concurrent_probes_per_target"`
+		EnableDebugPage           bool     `yaml:"enable_debug_page"`
+		AllowedVendors            []string `yaml:"allowed_vendors"`
+		AllowedTypes              []string `yaml:"allowed_types"`
+		AuthReloadIntervalSeconds int      `yaml:"auth_reload_interval_seconds"`
 	} `yaml:"global"`
 
 	Metrics struct {
@@ -61,17 +68,19 @@ func load(configPath string) {
 }
 
 func normalizeConfig(configPath string) {
-	if config.Global.Interval <= 0 {
-		log.Printf("invalid global.interval=%d in %s, fallback to 60", config.Global.Interval, configPath)
-		config.Global.Interval = 60
-	}
 	if config.Global.Timeout <= 0 {
 		log.Printf("invalid global.timeout=%d in %s, fallback to 10", config.Global.Timeout, configPath)
 		config.Global.Timeout = 10
 	}
-	if config.Global.Workers <= 0 {
-		log.Printf("invalid global.workers=%d in %s, fallback to 1", config.Global.Workers, configPath)
-		config.Global.Workers = 1
+	if config.Global.MaxConcurrentProbes <= 0 {
+		log.Printf("invalid global.max_concurrent_probes=%d in %s, fallback to 20", config.Global.MaxConcurrentProbes, configPath)
+		config.Global.MaxConcurrentProbes = 20
+	}
+	if config.Global.MaxConcurrentPerTarget <= 0 {
+		config.Global.MaxConcurrentPerTarget = 1
+	}
+	if config.Global.AuthReloadIntervalSeconds <= 0 {
+		config.Global.AuthReloadIntervalSeconds = 5
 	}
 	if config.Metrics.Listen == "" {
 		log.Printf("empty metrics.listen in %s, fallback to :9808", configPath)
@@ -79,22 +88,100 @@ func normalizeConfig(configPath string) {
 	}
 }
 
-func loadAuths(authPath string) (map[string]authEntry, error) {
-	if strings.TrimSpace(authPath) == "" {
-		return map[string]authEntry{}, nil
+type authStore struct {
+	path           string
+	minReloadEvery time.Duration
+
+	mu          sync.Mutex
+	lastCheckAt time.Time
+	lastModTime time.Time
+	auths       map[string]authEntry
+	lastLoadErr error
+}
+
+func newAuthStore(path string, minReloadEvery time.Duration) *authStore {
+	return &authStore{
+		path:           path,
+		minReloadEvery: minReloadEvery,
+		auths:          map[string]authEntry{},
 	}
-	data, err := os.ReadFile(authPath)
+}
+
+func (s *authStore) get() (map[string]authEntry, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	now := time.Now()
+	if !s.lastCheckAt.IsZero() && now.Sub(s.lastCheckAt) < s.minReloadEvery {
+		if s.lastLoadErr != nil {
+			return nil, s.lastLoadErr
+		}
+		return s.auths, nil
+	}
+	s.lastCheckAt = now
+
+	if strings.TrimSpace(s.path) == "" {
+		s.lastLoadErr = fmt.Errorf("empty auth_file")
+		return nil, s.lastLoadErr
+	}
+
+	st, err := os.Stat(s.path)
 	if err != nil {
+		s.lastLoadErr = err
 		return nil, err
 	}
+
+	if !s.lastModTime.IsZero() && st.ModTime().Equal(s.lastModTime) && s.lastLoadErr == nil {
+		return s.auths, nil
+	}
+
+	data, err := os.ReadFile(s.path)
+	if err != nil {
+		s.lastLoadErr = err
+		return nil, err
+	}
+
 	var af authFile
 	if err := yaml.Unmarshal(data, &af); err != nil {
+		s.lastLoadErr = err
 		return nil, err
 	}
 	if af.Auths == nil {
 		af.Auths = map[string]authEntry{}
 	}
-	return af.Auths, nil
+
+	s.lastModTime = st.ModTime()
+	s.auths = af.Auths
+	s.lastLoadErr = nil
+	return s.auths, nil
+}
+
+func inAllowList(list []string, v string) bool {
+	if len(list) == 0 {
+		return true
+	}
+	for _, item := range list {
+		if strings.TrimSpace(item) == v {
+			return true
+		}
+	}
+	return false
+}
+
+func effectiveTimeoutSeconds(globalTimeoutSeconds int, promTimeoutHeader string) float64 {
+	effective := float64(globalTimeoutSeconds)
+	if strings.TrimSpace(promTimeoutHeader) == "" {
+		return effective
+	}
+	v, err := strconv.ParseFloat(strings.TrimSpace(promTimeoutHeader), 64)
+	if err != nil || v <= 0 {
+		return effective
+	}
+	v = v - 0.2
+	if v <= 0 {
+		v = 0.1
+	}
+	return math.Min(effective, v)
 }
 
 var metricHelp = map[string]string{
@@ -134,7 +221,8 @@ func getMetricHelp(name string) string {
 }
 
 type probeCollector struct {
-	device core.Device
+	device  core.Device
+	timeout time.Duration
 }
 
 func (c *probeCollector) Describe(ch chan<- *prometheus.Desc) {}
@@ -152,8 +240,28 @@ func (c *probeCollector) Collect(ch chan<- prometheus.Metric) {
 		return
 	}
 
-	metrics, err := col.Collect(c.device)
-	c.emitProbeMetrics(ch, start, metrics, err)
+	if c.timeout <= 0 {
+		metrics, err := col.Collect(c.device)
+		c.emitProbeMetrics(ch, start, metrics, err)
+		return
+	}
+
+	type result struct {
+		metrics []core.Metric
+		err     error
+	}
+	done := make(chan result, 1)
+	go func() {
+		m, e := col.Collect(c.device)
+		done <- result{metrics: m, err: e}
+	}()
+
+	select {
+	case r := <-done:
+		c.emitProbeMetrics(ch, start, r.metrics, r.err)
+	case <-time.After(c.timeout):
+		c.emitProbeResult(ch, start, fmt.Errorf("probe timeout"))
+	}
 }
 
 func (c *probeCollector) emitProbeResult(ch chan<- prometheus.Metric, start time.Time, err error) {
@@ -310,16 +418,15 @@ func main() {
 	load(*configPath)
 	normalizeConfig(*configPath)
 
-	core.InitMetrics()
-
-	auths, err := loadAuths(config.AuthFile)
-	if err != nil {
+	authStore := newAuthStore(config.AuthFile, time.Duration(config.Global.AuthReloadIntervalSeconds)*time.Second)
+	if _, err := authStore.get(); err != nil {
 		log.Fatalf("load auth_file failed from %s: %v", config.AuthFile, err)
 	}
 
 	// register plugins
-	core.Register(&collectors.DBAPP{})
-	core.Register(&collectors.Sangfor{})
+	timeout := time.Duration(config.Global.Timeout) * time.Second
+	core.Register(&collectors.DBAPP{Timeout: timeout, InsecureSkipVerify: config.Global.InsecureSkipVerify})
+	core.Register(&collectors.Sangfor{Timeout: timeout, InsecureSkipVerify: config.Global.InsecureSkipVerify})
 	// core.Register(&collectors.H3C{})    // 暂不纳入采集，仅作示例
 	// core.Register(&collectors.Huawei{}) // 暂不纳入采集，仅作示例
 
@@ -355,6 +462,9 @@ func main() {
 		ctx.Data(http.StatusOK, "text/html; charset=utf-8", []byte(page))
 	})
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
+	probeSem := make(chan struct{}, config.Global.MaxConcurrentProbes)
+	targetSemMu := sync.Mutex{}
+	targetSems := map[string]chan struct{}{}
 
 	debugPage := func(ctx *gin.Context) {
 		page := `<!doctype html>
@@ -638,8 +748,20 @@ func main() {
 	}
 
 	r.GET("/probe", func(ctx *gin.Context) {
+		select {
+		case probeSem <- struct{}{}:
+			defer func() { <-probeSem }()
+		default:
+			ctx.String(http.StatusTooManyRequests, "too many concurrent probes\n")
+			return
+		}
+
 		if strings.TrimSpace(ctx.Request.URL.RawQuery) == "" {
-			debugPage(ctx)
+			if config.Global.EnableDebugPage {
+				debugPage(ctx)
+			} else {
+				ctx.String(http.StatusNotFound, "debug page disabled\n")
+			}
 			return
 		}
 
@@ -653,6 +775,36 @@ func main() {
 			ctx.String(http.StatusBadRequest, "missing required params: target, vendor, type\n")
 			return
 		}
+		if !inAllowList(config.Global.AllowedVendors, vendor) {
+			ctx.String(http.StatusBadRequest, "vendor not allowed\n")
+			return
+		}
+		if !inAllowList(config.Global.AllowedTypes, devType) {
+			ctx.String(http.StatusBadRequest, "type not allowed\n")
+			return
+		}
+		if strings.Contains(target, "://") || strings.Contains(target, "/") {
+			ctx.String(http.StatusBadRequest, "invalid target\n")
+			return
+		}
+
+		targetKey := target
+		targetSemMu.Lock()
+		targetSem, ok := targetSems[targetKey]
+		if !ok {
+			targetSem = make(chan struct{}, config.Global.MaxConcurrentPerTarget)
+			targetSems[targetKey] = targetSem
+		}
+		targetSemMu.Unlock()
+
+		select {
+		case targetSem <- struct{}{}:
+			defer func() { <-targetSem }()
+		default:
+			ctx.String(http.StatusTooManyRequests, "too many concurrent probes for target\n")
+			return
+		}
+
 		if name == "" {
 			name = target
 		}
@@ -668,6 +820,12 @@ func main() {
 			ctx.String(http.StatusBadRequest, "missing required param: auth\n")
 			return
 		}
+		auths, err := authStore.get()
+		if err != nil {
+			ctx.String(http.StatusInternalServerError, "load auth_file failed\n")
+			return
+		}
+
 		a, ok := auths[authID]
 		if !ok {
 			ctx.String(http.StatusBadRequest, "unknown auth: %s\n", authID)
@@ -690,8 +848,11 @@ func main() {
 			return
 		}
 
+		timeoutSeconds := effectiveTimeoutSeconds(config.Global.Timeout, ctx.GetHeader("X-Prometheus-Scrape-Timeout-Seconds"))
+		probeTimeout := time.Duration(timeoutSeconds * float64(time.Second))
+
 		reg := prometheus.NewRegistry()
-		reg.MustRegister(&probeCollector{device: dev})
+		reg.MustRegister(&probeCollector{device: dev, timeout: probeTimeout})
 
 		handler := promhttp.HandlerFor(reg, promhttp.HandlerOpts{})
 		handler.ServeHTTP(ctx.Writer, ctx.Request)
