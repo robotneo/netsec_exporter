@@ -13,7 +13,7 @@ import (
 	"netsec_exporter/core"
 )
 
-var uptimePartPattern = regexp.MustCompile(`(\d+)\s*(天|小时|分钟|分|秒)`)
+var uptimePartPattern = regexp.MustCompile(`(?i)(\d+)\s*(weeks?|days?|hours?|minutes?|mins?|seconds?|secs?|天|小时|分钟|分|秒)`)
 
 func CollectUptimeSeconds(c *client.Client, sess client.Session, dev core.Device) ([]core.Metric, error) {
 	apiURL := fmt.Sprintf("https://%s/api/v1/namespaces/%s/uptimes", dev.Host, sess.Namespace)
@@ -113,7 +113,18 @@ func parseUptimeToSeconds(raw string) (float64, error) {
 			return 0, fmt.Errorf("invalid uptime number: %w", err)
 		}
 
-		switch m[2] {
+		unit := strings.ToLower(m[2])
+		switch unit {
+		case "week", "weeks":
+			total += float64(n * 7 * 24 * 3600)
+		case "day", "days":
+			total += float64(n * 24 * 3600)
+		case "hour", "hours":
+			total += float64(n * 3600)
+		case "minute", "minutes", "min", "mins":
+			total += float64(n * 60)
+		case "second", "seconds", "sec", "secs":
+			total += float64(n)
 		case "天":
 			total += float64(n * 24 * 3600)
 		case "小时":
@@ -127,10 +138,10 @@ func parseUptimeToSeconds(raw string) (float64, error) {
 		}
 	}
 
-	condensed := strings.ReplaceAll(text, " ", "")
+	condensed := strings.NewReplacer(" ", "", ",", "", "，", "").Replace(text)
 	reconstructed := ""
 	for _, m := range matches {
-		reconstructed += strings.ReplaceAll(strings.TrimSpace(m[0]), " ", "")
+		reconstructed += strings.NewReplacer(" ", "", ",", "", "，", "").Replace(strings.TrimSpace(m[0]))
 	}
 	if reconstructed != condensed {
 		return 0, fmt.Errorf("unsupported uptime format: %s", text)

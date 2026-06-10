@@ -210,6 +210,8 @@ systemctl stop netsec_exporter
 
 ## 导出指标说明
 
+备注：风扇、电源、温度相关指标在深信服 8.0.107 及以上版本才支持。
+
 | 指标名称 | 类型 | 含义 | 标签 |
 | :--- | :--- | :--- | :--- |
 | `netsec_device_up` | Gauge | 设备在线状态 | `device_name, instance, vendor, type` |
