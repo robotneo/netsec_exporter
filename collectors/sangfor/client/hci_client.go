@@ -26,16 +26,16 @@ func NewHCIClient(host string, timeout time.Duration, insecureSkipVerify bool) *
 	}
 }
 
-func (c *HCIClient) GetPublicKeyModulus(ctx context.Context) (string, error) {
+func (c *HCIClient) GetPublicKeyModulus(ctx context.Context) (string, string, error) {
 	modulus, err := c.getPublicKeyV2(ctx)
 	if err == nil && strings.TrimSpace(modulus) != "" {
-		return modulus, nil
+		return modulus, "", nil
 	}
-	modulus, err = c.getPublicKeyV1(ctx)
+	modulus, cookieVal, err := c.getPublicKeyV1(ctx)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	return modulus, nil
+	return modulus, cookieVal, nil
 }
 
 func (c *HCIClient) getPublicKeyV2(ctx context.Context) (string, error) {
@@ -64,36 +64,36 @@ func (c *HCIClient) getPublicKeyV2(ctx context.Context) (string, error) {
 	return normalizeHexString(r.PublicKey), nil
 }
 
-func (c *HCIClient) getPublicKeyV1(ctx context.Context) (string, error) {
+func (c *HCIClient) getPublicKeyV1(ctx context.Context) (string, string, error) {
 	cookieVal, err := randomHex(16)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "GET", c.BaseURL+"/janus/public-key", nil)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	req.Header.Set("Cookie", "aCMPAuthToken="+cookieVal)
 
 	resp, err := c.HTTPClient.Do(req)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		bodyBytes, _ := io.ReadAll(resp.Body)
-		return "", fmt.Errorf("public-key status=%d body=%s", resp.StatusCode, strings.TrimSpace(string(bodyBytes)))
+		return "", "", fmt.Errorf("public-key status=%d body=%s", resp.StatusCode, strings.TrimSpace(string(bodyBytes)))
 	}
 
 	var r struct {
 		PublicKey string `json:"public_key"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
-		return "", err
+		return "", "", err
 	}
-	return normalizeHexString(r.PublicKey), nil
+	return normalizeHexString(r.PublicKey), cookieVal, nil
 }
 
 func (c *HCIClient) DoJSON(ctx context.Context, sess HCISession, method string, path string, reqBody any, out any) error {

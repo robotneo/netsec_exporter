@@ -208,6 +208,18 @@ var metricHelp = map[string]string{
 	"netsec_interface_traffic_in_packets_total":  "Network security device interface traffic in packets total",
 	"netsec_ha_enabled":                          "Network security device HA enabled (1 enabled, 0 disabled)",
 	"netsec_ha_mode":                             "Network security device HA mode (ACTIVE-ACTIVE=1, ACTIVE-PASSIVE=2, MIRROR=3)",
+	"netsec_hci_overview_hosts_total":            "Sangfor SCP/HCI overview: total hosts",
+	"netsec_hci_overview_hosts_online":           "Sangfor SCP/HCI overview: online hosts",
+	"netsec_hci_overview_hosts_offline":          "Sangfor SCP/HCI overview: offline hosts",
+	"netsec_hci_overview_hosts_alarm":            "Sangfor SCP/HCI overview: alarm hosts",
+	"netsec_hci_overview_servers_total":          "Sangfor SCP/HCI overview: total servers",
+	"netsec_hci_overview_servers_running":        "Sangfor SCP/HCI overview: running servers",
+	"netsec_hci_overview_servers_offline":        "Sangfor SCP/HCI overview: offline servers",
+	"netsec_hci_overview_servers_alarm":          "Sangfor SCP/HCI overview: alarm servers",
+	"netsec_hci_overview_servers_error":          "Sangfor SCP/HCI overview: error servers",
+	"netsec_hci_host_alarm_count":                "Sangfor SCP/HCI host alarm count",
+	"netsec_hci_host_cpu_usage_ratio":            "Sangfor SCP/HCI host cpu usage ratio (0-1)",
+	"netsec_hci_host_memory_usage_ratio":         "Sangfor SCP/HCI host memory usage ratio (0-1)",
 	"netsec_device_up":                           "Network security device status",
 	"netsec_scrape_duration_seconds":             "Network security device scrape duration",
 	"netsec_probe_scrape_duration_seconds":       "Network security device probe scrape duration",
@@ -637,6 +649,7 @@ func main() {
               <input id="type" placeholder="firewall" list="typeList" />
               <datalist id="typeList">
                 <option value="firewall"></option>
+                <option value="hci"></option>
               </datalist>
             </div>
             <div class="field">

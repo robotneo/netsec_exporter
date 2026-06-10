@@ -66,17 +66,12 @@ func (m *HCISessionManager) GetOrLogin(ctx context.Context, username string, pas
 }
 
 func (c *HCIClient) LoginWithPassword(ctx context.Context, username string, password string) (HCISession, error) {
-	modulus, err := c.GetPublicKeyModulus(ctx)
+	modulus, cookieVal, err := c.GetPublicKeyModulus(ctx)
 	if err != nil {
 		return HCISession{}, err
 	}
 
 	encrypted, err := encryptPasswordWithModulus(password, modulus)
-	if err != nil {
-		return HCISession{}, err
-	}
-
-	cookieVal, err := randomHex(16)
 	if err != nil {
 		return HCISession{}, err
 	}
@@ -100,7 +95,9 @@ func (c *HCIClient) LoginWithPassword(ctx context.Context, username string, pass
 		return HCISession{}, err
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Cookie", "aCMPAuthToken="+cookieVal)
+	if strings.TrimSpace(cookieVal) != "" {
+		req.Header.Set("Cookie", "aCMPAuthToken="+cookieVal)
+	}
 
 	resp, err := c.HTTPClient.Do(req)
 	if err != nil {

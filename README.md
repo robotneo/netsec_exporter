@@ -84,6 +84,13 @@ auths:
 #### Web 调试页
 可访问 `http://<exporter>:9808/probe`（不带 query 参数）在页面中填写 `target/vendor/type/auth` 并直接发起探测请求。
 
+### 3.2 深信服 HCI / SCP API 说明
+- **版本说明**：从 HCI 6.8.0 开始，新建集群不再支持使用 HCI 的 API，必须使用 SCP 的 API 接口（本文档接口以 `/janus/...` 为主）。
+- **Cookie 说明**：SCP 6.3.70 及以上版本已经无需再传入 Cookie。Exporter 的实现不会依赖 Cookie（为兼容老版本接口可能会附带随机 `aCMPAuthToken`，一般不影响请求）。
+- **认证请求头**：`Authorization: {认证方式} {认证参数}`
+  - 支持 `AWS4-HMAC-SHA256`（EC2 签名）
+  - 支持 `Token`（示例：`Authorization: Token <token_id>`）
+
 ### 4. Prometheus 配置示例（static_configs）
 以下示例使用 `static_configs` 管理多台设备，并通过 relabel 将 labels 转成 `/probe` 参数：
 
