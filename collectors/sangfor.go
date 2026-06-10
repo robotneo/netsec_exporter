@@ -194,6 +194,68 @@ func (c *Sangfor) collectFirewallV1(dev core.Device) ([]core.Metric, error) {
 		}
 	}
 
+	systemVersionMetrics, err := sangforfw.CollectVersionInfo(c.client, sess, dev)
+	if err != nil {
+		c.sm.Invalidate(dev.Host)
+		sess, err = c.sm.GetOrLogin(dev)
+		if err != nil {
+			systemVersionMetrics = sangforfw.VersionUnavailableMetric(dev)
+		} else {
+			systemVersionMetrics, err = sangforfw.CollectVersionInfo(c.client, sess, dev)
+			if err != nil {
+				systemVersionMetrics = sangforfw.VersionUnavailableMetric(dev)
+			}
+		}
+	}
+
+	uptimeMetrics, err := sangforfw.CollectUptimeSeconds(c.client, sess, dev)
+	if err != nil {
+		c.sm.Invalidate(dev.Host)
+		sess, err = c.sm.GetOrLogin(dev)
+		if err == nil {
+			uptimeMetrics, err = sangforfw.CollectUptimeSeconds(c.client, sess, dev)
+		}
+		if err != nil {
+			uptimeMetrics = nil
+		}
+	}
+
+	fanMetrics, err := sangforfw.CollectFanStatus(c.client, sess, dev)
+	if err != nil {
+		c.sm.Invalidate(dev.Host)
+		sess, err = c.sm.GetOrLogin(dev)
+		if err == nil {
+			fanMetrics, err = sangforfw.CollectFanStatus(c.client, sess, dev)
+		}
+		if err != nil {
+			fanMetrics = nil
+		}
+	}
+
+	powerMetrics, err := sangforfw.CollectPowerStatus(c.client, sess, dev)
+	if err != nil {
+		c.sm.Invalidate(dev.Host)
+		sess, err = c.sm.GetOrLogin(dev)
+		if err == nil {
+			powerMetrics, err = sangforfw.CollectPowerStatus(c.client, sess, dev)
+		}
+		if err != nil {
+			powerMetrics = nil
+		}
+	}
+
+	temperatureMetrics, err := sangforfw.CollectTemperatureMetrics(c.client, sess, dev)
+	if err != nil {
+		c.sm.Invalidate(dev.Host)
+		sess, err = c.sm.GetOrLogin(dev)
+		if err == nil {
+			temperatureMetrics, err = sangforfw.CollectTemperatureMetrics(c.client, sess, dev)
+		}
+		if err != nil {
+			temperatureMetrics = nil
+		}
+	}
+
 	metrics := append([]core.Metric{}, cpuMetrics...)
 	metrics = append(metrics, memMetrics...)
 	metrics = append(metrics, diskMetrics...)
@@ -202,6 +264,11 @@ func (c *Sangfor) collectFirewallV1(dev core.Device) ([]core.Metric, error) {
 	metrics = append(metrics, trafficMetrics...)
 	metrics = append(metrics, interfaceMetrics...)
 	metrics = append(metrics, haMetrics...)
+	metrics = append(metrics, systemVersionMetrics...)
+	metrics = append(metrics, uptimeMetrics...)
+	metrics = append(metrics, fanMetrics...)
+	metrics = append(metrics, powerMetrics...)
+	metrics = append(metrics, temperatureMetrics...)
 	return metrics, nil
 }
 
