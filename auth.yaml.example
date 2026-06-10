@@ -1,0 +1,11 @@
+auths:
+  sangfor_admin:
+    vendor: sangfor
+    type: firewall
+    username: admin
+    password: your-password
+
+  dbapp_token_a:
+    vendor: dbapp
+    type: firewall
+    token: your-api-token

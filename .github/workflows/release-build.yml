@@ -1,0 +1,105 @@
+name: Release Build
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.goos }}-${{ matrix.goarch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+            ext: ""
+            archive_ext: ".tar.gz"
+          - goos: linux
+            goarch: arm64
+            ext: ""
+            archive_ext: ".tar.gz"
+          - goos: windows
+            goarch: amd64
+            ext: ".exe"
+            archive_ext: ".zip"
+          - goos: windows
+            goarch: arm64
+            ext: ".exe"
+            archive_ext: ".zip"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Prepare version
+        id: meta
+        run: |
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            echo "version=${GITHUB_REF_NAME}" >> "${GITHUB_OUTPUT}"
+          else
+            echo "version=dev-${GITHUB_SHA::7}" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Build and package
+        env:
+          CGO_ENABLED: "0"
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          mkdir -p dist
+          package_dir="netsec_exporter_${VERSION}_${GOOS}_${GOARCH}"
+          staging_dir="dist/${package_dir}"
+          binary_name="netsec_exporter${{ matrix.ext }}"
+
+          mkdir -p "${staging_dir}"
+          go build -trimpath -ldflags="-s -w" -o "${staging_dir}/${binary_name}" ./
+          cp config.yaml "${staging_dir}/config.yaml"
+          cp auth.yaml.example "${staging_dir}/auth.yaml.example"
+
+          if [ "${GOOS}" = "linux" ]; then
+            tar -C dist -czf "dist/${package_dir}${{ matrix.archive_ext }}" "${package_dir}"
+          else
+            (
+              cd dist
+              zip -r "${package_dir}${{ matrix.archive_ext }}" "${package_dir}"
+            )
+          fi
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/*${{ matrix.archive_ext }}
+          if-no-files-found: error
+
+  release:
+    name: Publish Release Assets
+    if: github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-assets/*
+          generate_release_notes: true
