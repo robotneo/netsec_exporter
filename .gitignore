@@ -1,2 +1,79 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+coverage.out
+coverage.html
+
+# Go workspace
+go.work
+go.work.sum
+
+# Dependency directories (可选)
+vendor/
+
+# Build directories
+bin/
+dist/
+build/
+release/
+
+# Logs
+*.log
+logs/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# IDE - GoLand / IntelliJ
+.idea/
+*.iml
+
+# VSCode
+.vscode/
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Generated files
+*.generated.go
+
+# Delve debugger
+__debug_bin
+
+# Air 热更新
+.air.toml
+
+# Mock 文件（如果自动生成）
+mock/
+mocks/
+
+# Profiling
+*.prof
+cpu.prof
+mem.prof
+trace.out
+
+# Benchmark
+benchmark.out
+
+# pdf doc
 *.pdf
-/collectors/sangfor/hci/Open-API-zh_CN-2024-05-15.pdf
