@@ -76,7 +76,7 @@ func CollectAZAndHostMetrics(c *client.HCIClient, sess client.HCISession, dev co
 	base := map[string]string{
 		"device_name": dev.Name,
 		"vendor":      dev.Vendor,
-		"type":        dev.Type,
+		"role":        dev.Type,
 	}
 
 	var out []core.Metric

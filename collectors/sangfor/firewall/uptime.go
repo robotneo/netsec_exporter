@@ -76,7 +76,7 @@ func CollectUptimeSeconds(c *client.Client, sess client.Session, dev core.Device
 			Labels: map[string]string{
 				"device_name": dev.Name,
 				"vendor":      dev.Vendor,
-				"type":        dev.Type,
+				"role":        dev.Type,
 			},
 		},
 		{
@@ -85,7 +85,7 @@ func CollectUptimeSeconds(c *client.Client, sess client.Session, dev core.Device
 			Labels: map[string]string{
 				"device_name": dev.Name,
 				"vendor":      dev.Vendor,
-				"type":        dev.Type,
+				"role":        dev.Type,
 			},
 		},
 	}, nil

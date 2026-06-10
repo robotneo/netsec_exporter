@@ -10,7 +10,7 @@ var (
 			Name: "netsec_iplink_status",
 			Help: "Network security device IP link status",
 		},
-		[]string{"device_name", "instance", "name", "interface", "destination", "vendor", "type"},
+		[]string{"device_name", "instance", "name", "interface", "destination", "vendor", "role"},
 	)
 
 	cpuUsagePercent = prometheus.NewGaugeVec(
@@ -18,7 +18,7 @@ var (
 			Name: "netsec_system_cpu_usage_percent",
 			Help: "Network security device CPU usage percent",
 		},
-		[]string{"device_name", "instance", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "role"},
 	)
 
 	memoryUsagePercent = prometheus.NewGaugeVec(
@@ -26,7 +26,7 @@ var (
 			Name: "netsec_system_memory_usage_percent",
 			Help: "Network security device memory usage percent",
 		},
-		[]string{"device_name", "instance", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "role"},
 	)
 
 	diskUsagePercent = prometheus.NewGaugeVec(
@@ -34,23 +34,31 @@ var (
 			Name: "netsec_system_disk_usage_percent",
 			Help: "Network security device disk usage percent",
 		},
-		[]string{"device_name", "instance", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "role"},
 	)
 
-	concurrentSessions = prometheus.NewGaugeVec(
+	activeSessionsCurrent = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "netsec_session_concurrent",
-			Help: "Network security device concurrent sessions",
+			Name: "netsec_session_active_current",
+			Help: "Network security device active sessions (current)",
 		},
-		[]string{"device_name", "instance", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "role"},
 	)
 
-	newSessions = prometheus.NewGaugeVec(
+	newSessionsPerSecond = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "netsec_session_creation_rate",
-			Help: "Network security device session creation rate (REAL-TIME)",
+			Name: "netsec_sessions_new_per_second",
+			Help: "Network security device new sessions per second (REAL-TIME)",
 		},
-		[]string{"device_name", "instance", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "role"},
+	)
+
+	sessionMaxLimit = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_session_max_limit",
+			Help: "Network security device maximum session limit",
+		},
+		[]string{"device_name", "instance", "vendor", "role"},
 	)
 
 	interfaceSendBits = prometheus.NewGaugeVec(
@@ -58,7 +66,7 @@ var (
 			Name: "netsec_interface_send_bits",
 			Help: "Network security device interface total realtime send throughput (bits)",
 		},
-		[]string{"device_name", "instance", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "role"},
 	)
 
 	interfaceRecvBits = prometheus.NewGaugeVec(
@@ -66,10 +74,10 @@ var (
 			Name: "netsec_interface_recv_bits",
 			Help: "Network security device interface total realtime receive throughput (bits)",
 		},
-		[]string{"device_name", "instance", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "role"},
 	)
 
-	interfaceLabelNames = []string{"device_name", "instance", "if_name", "description", "zone", "mac", "ip_addr", "vendor", "type"}
+	interfaceLabelNames = []string{"device_name", "instance", "if_name", "description", "zone", "mac", "ip_addr", "vendor", "role"}
 
 	interfacePhysicalStatus = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
@@ -168,7 +176,7 @@ var (
 			Name: "netsec_ha_enabled",
 			Help: "Network security device HA enabled (1 enabled, 0 disabled)",
 		},
-		[]string{"device_name", "instance", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "role"},
 	)
 
 	haMode = prometheus.NewGaugeVec(
@@ -176,7 +184,7 @@ var (
 			Name: "netsec_ha_mode",
 			Help: "Network security device HA mode (ACTIVE-ACTIVE=1, ACTIVE-PASSIVE=2, MIRROR=3)",
 		},
-		[]string{"device_name", "instance", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "role"},
 	)
 
 	deviceUp = prometheus.NewGaugeVec(
@@ -184,7 +192,7 @@ var (
 			Name: "netsec_device_up",
 			Help: "Network security device status",
 		},
-		[]string{"device_name", "instance", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "role"},
 	)
 
 	scrapeDuration = prometheus.NewGaugeVec(
@@ -192,7 +200,7 @@ var (
 			Name: "netsec_scrape_duration_seconds",
 			Help: "Network security device scrape duration",
 		},
-		[]string{"device_name", "instance", "vendor", "type"},
+		[]string{"device_name", "instance", "vendor", "role"},
 	)
 )
 
@@ -201,8 +209,9 @@ func InitMetrics() {
 	prometheus.MustRegister(cpuUsagePercent)
 	prometheus.MustRegister(memoryUsagePercent)
 	prometheus.MustRegister(diskUsagePercent)
-	prometheus.MustRegister(concurrentSessions)
-	prometheus.MustRegister(newSessions)
+	prometheus.MustRegister(activeSessionsCurrent)
+	prometheus.MustRegister(newSessionsPerSecond)
+	prometheus.MustRegister(sessionMaxLimit)
 	prometheus.MustRegister(interfaceSendBits)
 	prometheus.MustRegister(interfaceRecvBits)
 	prometheus.MustRegister(interfacePhysicalStatus)
@@ -234,10 +243,12 @@ func SetMetric(m Metric) {
 		memoryUsagePercent.With(m.Labels).Set(m.Value)
 	case "netsec_system_disk_usage_percent":
 		diskUsagePercent.With(m.Labels).Set(m.Value)
-	case "netsec_session_concurrent":
-		concurrentSessions.With(m.Labels).Set(m.Value)
-	case "netsec_session_creation_rate":
-		newSessions.With(m.Labels).Set(m.Value)
+	case "netsec_session_active_current":
+		activeSessionsCurrent.With(m.Labels).Set(m.Value)
+	case "netsec_sessions_new_per_second":
+		newSessionsPerSecond.With(m.Labels).Set(m.Value)
+	case "netsec_session_max_limit":
+		sessionMaxLimit.With(m.Labels).Set(m.Value)
 	case "netsec_interface_send_bits":
 		interfaceSendBits.With(m.Labels).Set(m.Value)
 	case "netsec_interface_recv_bits":

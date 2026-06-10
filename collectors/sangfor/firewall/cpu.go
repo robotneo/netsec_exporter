@@ -55,7 +55,7 @@ func CollectCPUCurrentPercent(c *client.Client, sess client.Session, dev core.De
 			Labels: map[string]string{
 				"device_name": dev.Name,
 				"vendor":      dev.Vendor,
-				"type":        dev.Type,
+				"role":        dev.Type,
 			},
 		},
 	}, nil

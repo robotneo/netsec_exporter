@@ -65,7 +65,7 @@ func CollectDiskUsagePercent(c *client.Client, sess client.Session, dev core.Dev
 			Labels: map[string]string{
 				"device_name": dev.Name,
 				"vendor":      dev.Vendor,
-				"type":        dev.Type,
+				"role":        dev.Type,
 			},
 		},
 	}, nil

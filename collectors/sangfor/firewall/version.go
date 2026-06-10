@@ -61,7 +61,7 @@ func CollectVersionInfo(c *client.Client, sess client.Session, dev core.Device) 
 	labels := map[string]string{
 		"device_name": dev.Name,
 		"vendor":      dev.Vendor,
-		"type":        dev.Type,
+		"role":        dev.Type,
 		"version":     "",
 	}
 	if sr.Data.Full != "" {
@@ -85,7 +85,7 @@ func VersionUnavailableMetric(dev core.Device) []core.Metric {
 			Labels: map[string]string{
 				"device_name": dev.Name,
 				"vendor":      dev.Vendor,
-				"type":        dev.Type,
+				"role":        dev.Type,
 				"version":     "",
 			},
 		},

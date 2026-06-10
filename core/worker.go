@@ -32,8 +32,8 @@ func Worker(jobs <-chan Job) {
 				Labels: map[string]string{
 					"device_name": job.Device.Name,
 					"instance":    job.Device.Host,
-					"vendor": job.Device.Vendor,
-					"type":   job.Device.Type,
+					"vendor":      job.Device.Vendor,
+					"role":        job.Device.Type,
 				},
 			})
 
@@ -45,8 +45,8 @@ func Worker(jobs <-chan Job) {
 					Labels: map[string]string{
 						"device_name": job.Device.Name,
 						"instance":    job.Device.Host,
-						"vendor": job.Device.Vendor,
-						"type":   job.Device.Type,
+						"vendor":      job.Device.Vendor,
+						"role":        job.Device.Type,
 					},
 				})
 				return
@@ -59,8 +59,8 @@ func Worker(jobs <-chan Job) {
 				Labels: map[string]string{
 					"device_name": job.Device.Name,
 					"instance":    job.Device.Host,
-					"vendor": job.Device.Vendor,
-					"type":   job.Device.Type,
+					"vendor":      job.Device.Vendor,
+					"role":        job.Device.Type,
 				},
 			})
 
@@ -78,8 +78,8 @@ func Worker(jobs <-chan Job) {
 				if _, ok := m.Labels["vendor"]; !ok {
 					m.Labels["vendor"] = job.Device.Vendor
 				}
-				if _, ok := m.Labels["type"]; !ok {
-					m.Labels["type"] = job.Device.Type
+				if _, ok := m.Labels["role"]; !ok {
+					m.Labels["role"] = job.Device.Type
 				}
 				SetMetric(m)
 			}

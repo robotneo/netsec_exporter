@@ -214,40 +214,41 @@ systemctl stop netsec_exporter
 
 | 指标名称 | 类型 | 含义 | 标签 |
 | :--- | :--- | :--- | :--- |
-| `netsec_device_up` | Gauge | 设备在线状态 | `device_name, instance, vendor, type` |
-| `netsec_scrape_duration_seconds` | Gauge | 每次采集耗时（秒） | `device_name, instance, vendor, type` |
-| `netsec_system_cpu_usage_percent` | Gauge | CPU 使用率（百分比） | `device_name, instance, vendor, type` |
-| `netsec_system_memory_usage_percent` | Gauge | 内存使用率（百分比） | `device_name, instance, vendor, type` |
-| `netsec_system_disk_usage_percent` | Gauge | 硬盘使用率（百分比） | `device_name, instance, vendor, type` |
-| `netsec_system_version_info` | Gauge | 系统版本信息（成功=1，失败=0；版本通过 `version` 标签暴露） | `device_name, instance, vendor, type[, version]` |
-| `netsec_system_uptime_seconds` | Gauge | 设备持续运行时间（秒） | `device_name, instance, vendor, type` |
-| `netsec_system_boot_time_seconds` | Gauge | 设备启动时间（Unix 时间戳，秒） | `device_name, instance, vendor, type` |
-| `netsec_session_concurrent` | Gauge | 实时并发会话数（REAL-TIME） | `device_name, instance, vendor, type` |
-| `netsec_session_creation_rate` | Gauge | 实时新建会话数（REAL-TIME） | `device_name, instance, vendor, type` |
-| `netsec_ha_enabled` | Gauge | HA 是否开启（1:开启, 0:关闭） | `device_name, instance, vendor, type` |
-| `netsec_ha_mode` | Gauge | HA 模式（ACTIVE-ACTIVE=1, ACTIVE-PASSIVE=2, MIRROR=3） | `device_name, instance, vendor, type` |
-| `netsec_system_fan_status` | Gauge | 风扇传感器状态（Normal=1, Abnormal=0） | `device_name, instance, vendor, type, sensor_name` |
-| `netsec_system_power_status` | Gauge | 电源传感器状态（Normal=1, Abnormal=0） | `device_name, instance, vendor, type, sensor_name` |
-| `netsec_system_temperature_status` | Gauge | 温度传感器状态（Normal=1, Abnormal=0） | `device_name, instance, vendor, type, sensor_name` |
-| `netsec_system_temperature_current_celsius` | Gauge | 温度传感器当前温度（摄氏度） | `device_name, instance, vendor, type, sensor_name` |
-| `netsec_system_temperature_min_celsius` | Gauge | 温度传感器告警下限（摄氏度） | `device_name, instance, vendor, type, sensor_name` |
-| `netsec_system_temperature_max_celsius` | Gauge | 温度传感器告警上限（摄氏度） | `device_name, instance, vendor, type, sensor_name` |
-| `netsec_interface_send_bits` | Gauge | 设备维度：总实时发送速率（bits） | `device_name, instance, vendor, type` |
-| `netsec_interface_recv_bits` | Gauge | 设备维度：总实时接收速率（bits） | `device_name, instance, vendor, type` |
-| `netsec_interface_physical_state` | Gauge | 接口物理状态（true=1, false=0） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
-| `netsec_interface_link_state` | Gauge | 接口链路状态（true=1, false=0） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
-| `netsec_interface_mtu_bytes` | Gauge | 接口 MTU（bytes） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
-| `netsec_interface_ping_up` | Gauge | 接口 Ping 开关/可用（true=1, false=0） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
-| `netsec_interface_role` | Gauge | 接口角色（WAN=1, 非 WAN=0） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
-| `netsec_interface_media_type` | Gauge | 介质类型（TP=0, FIBER=1） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
-| `netsec_interface_category` | Gauge | 接口类别（PHYSICALIF=1, else=0） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
-| `netsec_interface_layer_mode` | Gauge | 接口层模式（BRIDGE=0, ROUTE=1） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
-| `netsec_interface_speed_mbps` | Gauge | 双工下协商速率（Mbps） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
-| `netsec_interface_traffic_out_bps` | Gauge | 接口出方向速率（bps） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
-| `netsec_interface_traffic_in_bps` | Gauge | 接口入方向速率（bps） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
-| `netsec_interface_traffic_out_packets_total` | Gauge | 接口出方向包数（当前值） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
-| `netsec_interface_traffic_in_packets_total` | Gauge | 接口入方向包数（当前值） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |
-| `netsec_iplink_status` | Gauge | IPLink 状态（1:正常, 0:异常） | `device_name, instance, vendor, type, name, interface, destination` |
+| `netsec_device_up` | Gauge | 设备在线状态 | `device_name, instance, vendor, role` |
+| `netsec_scrape_duration_seconds` | Gauge | 每次采集耗时（秒） | `device_name, instance, vendor, role` |
+| `netsec_system_cpu_usage_percent` | Gauge | CPU 使用率（百分比） | `device_name, instance, vendor, role` |
+| `netsec_system_memory_usage_percent` | Gauge | 内存使用率（百分比） | `device_name, instance, vendor, role` |
+| `netsec_system_disk_usage_percent` | Gauge | 硬盘使用率（百分比） | `device_name, instance, vendor, role` |
+| `netsec_system_version_info` | Gauge | 系统版本信息（成功=1，失败=0；版本通过 `version` 标签暴露） | `device_name, instance, vendor, role[, version]` |
+| `netsec_system_uptime_seconds` | Gauge | 设备持续运行时间（秒） | `device_name, instance, vendor, role` |
+| `netsec_system_boot_time_seconds` | Gauge | 设备启动时间（Unix 时间戳，秒） | `device_name, instance, vendor, role` |
+| `netsec_session_active_current` | Gauge | 实时活跃/并发会话数（当前值） | `device_name, instance, vendor, role` |
+| `netsec_sessions_new_per_second` | Gauge | 实时新建会话速率（每秒） | `device_name, instance, vendor, role` |
+| `netsec_session_max_limit` | Gauge | 最大会话数上限（部分厂商不支持则不输出） | `device_name, instance, vendor, role` |
+| `netsec_ha_enabled` | Gauge | HA 是否开启（1:开启, 0:关闭） | `device_name, instance, vendor, role` |
+| `netsec_ha_mode` | Gauge | HA 模式（ACTIVE-ACTIVE=1, ACTIVE-PASSIVE=2, MIRROR=3） | `device_name, instance, vendor, role` |
+| `netsec_system_fan_status` | Gauge | 风扇传感器状态（Normal=1, Abnormal=0） | `device_name, instance, vendor, role, sensor_name` |
+| `netsec_system_power_status` | Gauge | 电源传感器状态（Normal=1, Abnormal=0） | `device_name, instance, vendor, role, sensor_name` |
+| `netsec_system_temperature_status` | Gauge | 温度传感器状态（Normal=1, Abnormal=0） | `device_name, instance, vendor, role, sensor_name` |
+| `netsec_system_temperature_current_celsius` | Gauge | 温度传感器当前温度（摄氏度） | `device_name, instance, vendor, role, sensor_name` |
+| `netsec_system_temperature_min_celsius` | Gauge | 温度传感器告警下限（摄氏度） | `device_name, instance, vendor, role, sensor_name` |
+| `netsec_system_temperature_max_celsius` | Gauge | 温度传感器告警上限（摄氏度） | `device_name, instance, vendor, role, sensor_name` |
+| `netsec_interface_send_bits` | Gauge | 设备维度：总实时发送速率（bits） | `device_name, instance, vendor, role` |
+| `netsec_interface_recv_bits` | Gauge | 设备维度：总实时接收速率（bits） | `device_name, instance, vendor, role` |
+| `netsec_interface_physical_state` | Gauge | 接口物理状态（true=1, false=0） | `device_name, instance, vendor, role, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_link_state` | Gauge | 接口链路状态（true=1, false=0） | `device_name, instance, vendor, role, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_mtu_bytes` | Gauge | 接口 MTU（bytes） | `device_name, instance, vendor, role, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_ping_up` | Gauge | 接口 Ping 开关/可用（true=1, false=0） | `device_name, instance, vendor, role, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_role` | Gauge | 接口角色（WAN=1, 非 WAN=0） | `device_name, instance, vendor, role, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_media_type` | Gauge | 介质类型（TP=0, FIBER=1） | `device_name, instance, vendor, role, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_category` | Gauge | 接口类别（PHYSICALIF=1, else=0） | `device_name, instance, vendor, role, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_layer_mode` | Gauge | 接口层模式（BRIDGE=0, ROUTE=1） | `device_name, instance, vendor, role, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_speed_mbps` | Gauge | 双工下协商速率（Mbps） | `device_name, instance, vendor, role, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_traffic_out_bps` | Gauge | 接口出方向速率（bps） | `device_name, instance, vendor, role, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_traffic_in_bps` | Gauge | 接口入方向速率（bps） | `device_name, instance, vendor, role, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_traffic_out_packets_total` | Gauge | 接口出方向包数（当前值） | `device_name, instance, vendor, role, if_name, description, zone, mac, ip_addr` |
+| `netsec_interface_traffic_in_packets_total` | Gauge | 接口入方向包数（当前值） | `device_name, instance, vendor, role, if_name, description, zone, mac, ip_addr` |
+| `netsec_iplink_status` | Gauge | IPLink 状态（1:正常, 0:异常） | `device_name, instance, vendor, role, name, interface, destination` |
 
 ## 开发者指南
 

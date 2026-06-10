@@ -39,5 +39,12 @@ func NormalizeCommonLabels(labels map[string]string) map[string]string {
 		delete(labels, "host")
 	}
 
+	if v, ok := labels["type"]; ok {
+		if _, exists := labels["role"]; !exists {
+			labels["role"] = v
+		}
+		delete(labels, "type")
+	}
+
 	return labels
 }

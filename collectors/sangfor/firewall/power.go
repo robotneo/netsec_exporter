@@ -73,7 +73,7 @@ func CollectPowerStatus(c *client.Client, sess client.Session, dev core.Device) 
 		labels := map[string]string{
 			"device_name": dev.Name,
 			"vendor":      dev.Vendor,
-			"type":        dev.Type,
+			"role":        dev.Type,
 			"sensor_name": strings.TrimSpace(power.Name),
 		}
 

@@ -198,8 +198,9 @@ var metricHelp = map[string]string{
 	"netsec_system_temperature_current_celsius":  "Network security device temperature sensor current temperature in celsius",
 	"netsec_system_temperature_min_celsius":      "Network security device temperature sensor lower alarm threshold in celsius",
 	"netsec_system_temperature_max_celsius":      "Network security device temperature sensor upper alarm threshold in celsius",
-	"netsec_session_concurrent":                  "Network security device concurrent sessions",
-	"netsec_session_creation_rate":               "Network security device session creation rate (REAL-TIME)",
+	"netsec_session_active_current":              "Network security device active sessions (current)",
+	"netsec_sessions_new_per_second":             "Network security device new sessions per second (REAL-TIME)",
+	"netsec_session_max_limit":                   "Network security device maximum session limit",
 	"netsec_interface_send_bits":                 "Network security device interface total realtime send throughput (bits)",
 	"netsec_interface_recv_bits":                 "Network security device interface total realtime receive throughput (bits)",
 	"netsec_interface_physical_state":            "Network security device interface physical state (1=true, 0=false)",
@@ -292,7 +293,7 @@ func (c *probeCollector) emitProbeResult(ch chan<- prometheus.Metric, start time
 		"device_name": c.device.Name,
 		"instance":    c.device.Host,
 		"vendor":      c.device.Vendor,
-		"type":        c.device.Type,
+		"role":        c.device.Type,
 	}
 
 	up := 1.0
@@ -311,7 +312,7 @@ func (c *probeCollector) emitProbeMetrics(ch chan<- prometheus.Metric, start tim
 		"device_name": c.device.Name,
 		"instance":    c.device.Host,
 		"vendor":      c.device.Vendor,
-		"type":        c.device.Type,
+		"role":        c.device.Type,
 	}
 
 	up := 1.0
@@ -339,8 +340,8 @@ func (c *probeCollector) emitProbeMetrics(ch chan<- prometheus.Metric, start tim
 		if _, ok := all[i].Labels["vendor"]; !ok {
 			all[i].Labels["vendor"] = c.device.Vendor
 		}
-		if _, ok := all[i].Labels["type"]; !ok {
-			all[i].Labels["type"] = c.device.Type
+		if _, ok := all[i].Labels["role"]; !ok {
+			all[i].Labels["role"] = c.device.Type
 		}
 	}
 

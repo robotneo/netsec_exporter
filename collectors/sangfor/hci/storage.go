@@ -38,7 +38,7 @@ func CollectStorageMetrics(c *client.HCIClient, sess client.HCISession, dev core
 	base := map[string]string{
 		"device_name": dev.Name,
 		"vendor":      dev.Vendor,
-		"type":        dev.Type,
+		"role":        dev.Type,
 	}
 
 	out := []core.Metric{

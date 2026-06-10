@@ -14,11 +14,11 @@ import (
 )
 
 func CollectConcurrentSessions(c *client.Client, sess client.Session, dev core.Device) ([]core.Metric, error) {
-	return collectSessionNumber(c, sess, dev, "CONCURRENT", "netsec_session_concurrent")
+	return collectSessionNumber(c, sess, dev, "CONCURRENT", "netsec_session_active_current")
 }
 
 func CollectNewSessions(c *client.Client, sess client.Session, dev core.Device) ([]core.Metric, error) {
-	return collectSessionNumber(c, sess, dev, "NEW", "netsec_session_creation_rate")
+	return collectSessionNumber(c, sess, dev, "NEW", "netsec_sessions_new_per_second")
 }
 
 func collectSessionNumber(c *client.Client, sess client.Session, dev core.Device, sessionType string, metricName string) ([]core.Metric, error) {
@@ -89,7 +89,7 @@ func collectSessionNumber(c *client.Client, sess client.Session, dev core.Device
 			Labels: map[string]string{
 				"device_name": dev.Name,
 				"vendor":      dev.Vendor,
-				"type":        dev.Type,
+				"role":        dev.Type,
 			},
 		},
 	}, nil

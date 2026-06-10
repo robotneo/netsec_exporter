@@ -76,7 +76,7 @@ func CollectTemperatureMetrics(c *client.Client, sess client.Session, dev core.D
 		labels := map[string]string{
 			"device_name": dev.Name,
 			"vendor":      dev.Vendor,
-			"type":        dev.Type,
+			"role":        dev.Type,
 			"sensor_name": strings.TrimSpace(sensor.Name),
 		}
 
