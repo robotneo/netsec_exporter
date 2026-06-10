@@ -11,7 +11,7 @@ import (
 )
 
 func CollectPowerStatus(c *client.Client, sess client.Session, dev core.Device) ([]core.Metric, error) {
-	apiURL := fmt.Sprintf("https://%s/api/v1/namespaces/@namespace/powerInfo", dev.Host)
+	apiURL := fmt.Sprintf("https://%s/api/v1/namespaces/%s/powerInfo", dev.Host, sess.Namespace)
 
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
@@ -22,6 +22,19 @@ func CollectPowerStatus(c *client.Client, sess client.Session, dev core.Device) 
 	resp, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode == http.StatusNotFound {
+		resp.Body.Close()
+		apiURL = fmt.Sprintf("https://%s/api/v1/namespaces/@namespace/powerInfo", dev.Host)
+		req, err = http.NewRequest("GET", apiURL, nil)
+		if err != nil {
+			return nil, err
+		}
+		req.Header.Set("AuthorizationToken", sess.Token)
+		resp, err = c.HTTPClient.Do(req)
+		if err != nil {
+			return nil, err
+		}
 	}
 	defer resp.Body.Close()
 
@@ -61,13 +74,11 @@ func CollectPowerStatus(c *client.Client, sess client.Session, dev core.Device) 
 			"device_name": dev.Name,
 			"vendor":      dev.Vendor,
 			"type":        dev.Type,
-		}
-		if strings.TrimSpace(power.Name) != "" {
-			labels["sensor_name"] = power.Name
+			"sensor_name": strings.TrimSpace(power.Name),
 		}
 
 		metrics = append(metrics, core.Metric{
-			Name:   "netsec_power_status",
+			Name:   "netsec_system_power_status",
 			Value:  value,
 			Labels: labels,
 		})

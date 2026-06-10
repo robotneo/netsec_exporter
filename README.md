@@ -214,21 +214,22 @@ systemctl stop netsec_exporter
 | :--- | :--- | :--- | :--- |
 | `netsec_device_up` | Gauge | 设备在线状态 | `device_name, instance, vendor, type` |
 | `netsec_scrape_duration_seconds` | Gauge | 每次采集耗时（秒） | `device_name, instance, vendor, type` |
-| `netsec_cpu_usage_percent` | Gauge | CPU 使用率（百分比） | `device_name, instance, vendor, type` |
-| `netsec_memory_usage_percent` | Gauge | 内存使用率（百分比） | `device_name, instance, vendor, type` |
-| `netsec_disk_usage_percent` | Gauge | 硬盘使用率（百分比） | `device_name, instance, vendor, type` |
+| `netsec_system_cpu_usage_percent` | Gauge | CPU 使用率（百分比） | `device_name, instance, vendor, type` |
+| `netsec_system_memory_usage_percent` | Gauge | 内存使用率（百分比） | `device_name, instance, vendor, type` |
+| `netsec_system_disk_usage_percent` | Gauge | 硬盘使用率（百分比） | `device_name, instance, vendor, type` |
 | `netsec_system_version_info` | Gauge | 系统版本信息（成功=1，失败=0；版本通过 `version` 标签暴露） | `device_name, instance, vendor, type[, version]` |
-| `netsec_uptime_seconds` | Gauge | 设备持续运行时间（秒） | `device_name, instance, vendor, type` |
+| `netsec_system_uptime_seconds` | Gauge | 设备持续运行时间（秒） | `device_name, instance, vendor, type` |
+| `netsec_system_boot_time_seconds` | Gauge | 设备启动时间（Unix 时间戳，秒） | `device_name, instance, vendor, type` |
 | `netsec_session_concurrent` | Gauge | 实时并发会话数（REAL-TIME） | `device_name, instance, vendor, type` |
 | `netsec_session_creation_rate` | Gauge | 实时新建会话数（REAL-TIME） | `device_name, instance, vendor, type` |
 | `netsec_ha_enabled` | Gauge | HA 是否开启（1:开启, 0:关闭） | `device_name, instance, vendor, type` |
 | `netsec_ha_mode` | Gauge | HA 模式（ACTIVE-ACTIVE=1, ACTIVE-PASSIVE=2, MIRROR=3） | `device_name, instance, vendor, type` |
-| `netsec_fan_status` | Gauge | 风扇传感器状态（Normal=1, Abnormal=0） | `device_name, instance, vendor, type, sensor_name` |
-| `netsec_power_status` | Gauge | 电源传感器状态（Normal=1, Abnormal=0） | `device_name, instance, vendor, type, sensor_name` |
-| `netsec_temperature_status` | Gauge | 温度传感器状态（Normal=1, Abnormal=0） | `device_name, instance, vendor, type, sensor_name` |
-| `netsec_temperature_current_celsius` | Gauge | 温度传感器当前温度（摄氏度） | `device_name, instance, vendor, type, sensor_name` |
-| `netsec_temperature_min_celsius` | Gauge | 温度传感器告警下限（摄氏度） | `device_name, instance, vendor, type, sensor_name` |
-| `netsec_temperature_max_celsius` | Gauge | 温度传感器告警上限（摄氏度） | `device_name, instance, vendor, type, sensor_name` |
+| `netsec_system_fan_status` | Gauge | 风扇传感器状态（Normal=1, Abnormal=0） | `device_name, instance, vendor, type, sensor_name` |
+| `netsec_system_power_status` | Gauge | 电源传感器状态（Normal=1, Abnormal=0） | `device_name, instance, vendor, type, sensor_name` |
+| `netsec_system_temperature_status` | Gauge | 温度传感器状态（Normal=1, Abnormal=0） | `device_name, instance, vendor, type, sensor_name` |
+| `netsec_system_temperature_current_celsius` | Gauge | 温度传感器当前温度（摄氏度） | `device_name, instance, vendor, type, sensor_name` |
+| `netsec_system_temperature_min_celsius` | Gauge | 温度传感器告警下限（摄氏度） | `device_name, instance, vendor, type, sensor_name` |
+| `netsec_system_temperature_max_celsius` | Gauge | 温度传感器告警上限（摄氏度） | `device_name, instance, vendor, type, sensor_name` |
 | `netsec_interface_send_bits` | Gauge | 设备维度：总实时发送速率（bits） | `device_name, instance, vendor, type` |
 | `netsec_interface_recv_bits` | Gauge | 设备维度：总实时接收速率（bits） | `device_name, instance, vendor, type` |
 | `netsec_interface_physical_state` | Gauge | 接口物理状态（true=1, false=0） | `device_name, instance, vendor, type, if_name, description, zone, mac, ip_addr` |

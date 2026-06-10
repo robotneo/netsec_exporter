@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"netsec_exporter/collectors/sangfor/client"
 	"netsec_exporter/core"
@@ -15,7 +16,7 @@ import (
 var uptimePartPattern = regexp.MustCompile(`(\d+)\s*(天|小时|分钟|分|秒)`)
 
 func CollectUptimeSeconds(c *client.Client, sess client.Session, dev core.Device) ([]core.Metric, error) {
-	apiURL := fmt.Sprintf("https://%s/api/v1/namespaces/@namespace/uptimes", dev.Host)
+	apiURL := fmt.Sprintf("https://%s/api/v1/namespaces/%s/uptimes", dev.Host, sess.Namespace)
 
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
@@ -26,6 +27,19 @@ func CollectUptimeSeconds(c *client.Client, sess client.Session, dev core.Device
 	resp, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode == http.StatusNotFound {
+		resp.Body.Close()
+		apiURL = fmt.Sprintf("https://%s/api/v1/namespaces/@namespace/uptimes", dev.Host)
+		req, err = http.NewRequest("GET", apiURL, nil)
+		if err != nil {
+			return nil, err
+		}
+		req.Header.Set("AuthorizationToken", sess.Token)
+		resp, err = c.HTTPClient.Do(req)
+		if err != nil {
+			return nil, err
+		}
 	}
 	defer resp.Body.Close()
 
@@ -53,10 +67,21 @@ func CollectUptimeSeconds(c *client.Client, sess client.Session, dev core.Device
 		return nil, err
 	}
 
+	bootTime := float64(time.Now().Unix()) - seconds
+
 	return []core.Metric{
 		{
-			Name:  "netsec_uptime_seconds",
+			Name:  "netsec_system_uptime_seconds",
 			Value: seconds,
+			Labels: map[string]string{
+				"device_name": dev.Name,
+				"vendor":      dev.Vendor,
+				"type":        dev.Type,
+			},
+		},
+		{
+			Name:  "netsec_system_boot_time_seconds",
+			Value: bootTime,
 			Labels: map[string]string{
 				"device_name": dev.Name,
 				"vendor":      dev.Vendor,

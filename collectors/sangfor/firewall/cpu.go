@@ -50,7 +50,7 @@ func CollectCPUCurrentPercent(c *client.Client, sess client.Session, dev core.De
 
 	return []core.Metric{
 		{
-			Name:  "netsec_cpu_usage_percent",
+			Name:  "netsec_system_cpu_usage_percent",
 			Value: cpu,
 			Labels: map[string]string{
 				"device_name": dev.Name,

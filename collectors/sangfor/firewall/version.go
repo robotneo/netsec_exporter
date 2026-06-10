@@ -62,6 +62,7 @@ func CollectVersionInfo(c *client.Client, sess client.Session, dev core.Device) 
 		"device_name": dev.Name,
 		"vendor":      dev.Vendor,
 		"type":        dev.Type,
+		"version":     "",
 	}
 	if sr.Data.Full != "" {
 		labels["version"] = sr.Data.Full
@@ -85,6 +86,7 @@ func VersionUnavailableMetric(dev core.Device) []core.Metric {
 				"device_name": dev.Name,
 				"vendor":      dev.Vendor,
 				"type":        dev.Type,
+				"version":     "",
 			},
 		},
 	}

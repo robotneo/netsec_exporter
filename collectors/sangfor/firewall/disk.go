@@ -60,7 +60,7 @@ func CollectDiskUsagePercent(c *client.Client, sess client.Session, dev core.Dev
 
 	return []core.Metric{
 		{
-			Name:  "netsec_disk_usage_percent",
+			Name:  "netsec_system_disk_usage_percent",
 			Value: dr.Data.DiskUsage,
 			Labels: map[string]string{
 				"device_name": dev.Name,

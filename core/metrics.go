@@ -15,7 +15,7 @@ var (
 
 	cpuUsagePercent = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "netsec_cpu_usage_percent",
+			Name: "netsec_system_cpu_usage_percent",
 			Help: "Network security device CPU usage percent",
 		},
 		[]string{"device_name", "instance", "vendor", "type"},
@@ -23,7 +23,7 @@ var (
 
 	memoryUsagePercent = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "netsec_memory_usage_percent",
+			Name: "netsec_system_memory_usage_percent",
 			Help: "Network security device memory usage percent",
 		},
 		[]string{"device_name", "instance", "vendor", "type"},
@@ -31,7 +31,7 @@ var (
 
 	diskUsagePercent = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "netsec_disk_usage_percent",
+			Name: "netsec_system_disk_usage_percent",
 			Help: "Network security device disk usage percent",
 		},
 		[]string{"device_name", "instance", "vendor", "type"},
@@ -228,11 +228,11 @@ func SetMetric(m Metric) {
 	switch m.Name {
 	case "netsec_iplink_status":
 		iplinkStatus.With(m.Labels).Set(m.Value)
-	case "netsec_cpu_usage_percent":
+	case "netsec_system_cpu_usage_percent":
 		cpuUsagePercent.With(m.Labels).Set(m.Value)
-	case "netsec_memory_usage_percent":
+	case "netsec_system_memory_usage_percent":
 		memoryUsagePercent.With(m.Labels).Set(m.Value)
-	case "netsec_disk_usage_percent":
+	case "netsec_system_disk_usage_percent":
 		diskUsagePercent.With(m.Labels).Set(m.Value)
 	case "netsec_session_concurrent":
 		concurrentSessions.With(m.Labels).Set(m.Value)

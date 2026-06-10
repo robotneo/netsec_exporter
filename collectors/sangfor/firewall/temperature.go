@@ -11,7 +11,7 @@ import (
 )
 
 func CollectTemperatureMetrics(c *client.Client, sess client.Session, dev core.Device) ([]core.Metric, error) {
-	apiURL := fmt.Sprintf("https://%s/api/v1/namespaces/@namespace/tempratureInfo", dev.Host)
+	apiURL := fmt.Sprintf("https://%s/api/v1/namespaces/%s/tempratureInfo", dev.Host, sess.Namespace)
 
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
@@ -22,6 +22,19 @@ func CollectTemperatureMetrics(c *client.Client, sess client.Session, dev core.D
 	resp, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode == http.StatusNotFound {
+		resp.Body.Close()
+		apiURL = fmt.Sprintf("https://%s/api/v1/namespaces/@namespace/tempratureInfo", dev.Host)
+		req, err = http.NewRequest("GET", apiURL, nil)
+		if err != nil {
+			return nil, err
+		}
+		req.Header.Set("AuthorizationToken", sess.Token)
+		resp, err = c.HTTPClient.Do(req)
+		if err != nil {
+			return nil, err
+		}
 	}
 	defer resp.Body.Close()
 
@@ -64,16 +77,14 @@ func CollectTemperatureMetrics(c *client.Client, sess client.Session, dev core.D
 			"device_name": dev.Name,
 			"vendor":      dev.Vendor,
 			"type":        dev.Type,
-		}
-		if strings.TrimSpace(sensor.Name) != "" {
-			labels["sensor_name"] = sensor.Name
+			"sensor_name": strings.TrimSpace(sensor.Name),
 		}
 
 		metrics = append(metrics,
-			core.Metric{Name: "netsec_temperature_status", Value: status, Labels: labels},
-			core.Metric{Name: "netsec_temperature_current_celsius", Value: sensor.Current, Labels: labels},
-			core.Metric{Name: "netsec_temperature_min_celsius", Value: sensor.Min, Labels: labels},
-			core.Metric{Name: "netsec_temperature_max_celsius", Value: sensor.Max, Labels: labels},
+			core.Metric{Name: "netsec_system_temperature_status", Value: status, Labels: labels},
+			core.Metric{Name: "netsec_system_temperature_current_celsius", Value: sensor.Current, Labels: labels},
+			core.Metric{Name: "netsec_system_temperature_min_celsius", Value: sensor.Min, Labels: labels},
+			core.Metric{Name: "netsec_system_temperature_max_celsius", Value: sensor.Max, Labels: labels},
 		)
 	}
 
