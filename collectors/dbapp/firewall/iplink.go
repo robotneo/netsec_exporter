@@ -57,8 +57,8 @@ func CollectIPLinkStatus(c *client.Client, dev core.Device) ([]core.Metric, erro
 				"instance":    dev.Host,
 				"vendor":      dev.Vendor,
 				"role":        dev.Type,
-				"name":        v.Name,
-				"interface":   v.Interface,
+				"description": v.Name,
+				"if_name":     v.Interface,
 				"destination": v.Destination,
 			},
 		})

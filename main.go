@@ -46,11 +46,13 @@ type Config struct {
 var config Config
 
 type authEntry struct {
-	Vendor   string `yaml:"vendor"`
-	Type     string `yaml:"type"`
-	Token    string `yaml:"token"`
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
+	Vendor        string `yaml:"vendor"`
+	Type          string `yaml:"type"`
+	Token         string `yaml:"token"`
+	Username      string `yaml:"username"`
+	Password      string `yaml:"password"`
+	SNMPCommunity string `yaml:"snmp_community"`
+	SNMPPort      uint16 `yaml:"snmp_port"`
 }
 
 type authFile struct {
@@ -865,8 +867,10 @@ func main() {
 		dev.Token = a.Token
 		dev.Username = a.Username
 		dev.Password = a.Password
+		dev.SNMPCommunity = a.SNMPCommunity
+		dev.SNMPPort = a.SNMPPort
 
-		if dev.Token == "" && dev.Username == "" && dev.Password == "" {
+		if dev.Token == "" && dev.Username == "" && dev.Password == "" && dev.SNMPCommunity == "" {
 			ctx.String(http.StatusBadRequest, "auth has no credentials: %s\n", authID)
 			return
 		}

@@ -72,7 +72,22 @@ auths:
     vendor: dbapp
     type: firewall
     token: your-api-token
+
+  # 明御（DBAPP）同时使用 REST API + SNMP 的示例：
+  # - REST API：用于 iplink、接口配置/状态等
+  # - SNMP：用于 CPU/内存/硬盘等
+  dbapp_api_and_snmp:
+    vendor: dbapp
+    type: firewall
+    token: your-api-token
+    snmp_community: public
+    snmp_port: 161
 ```
+
+说明：
+- `token`：DBAPP/明御的 REST API 认证（当前用于 `iplink`、`/api/v1/intf`、`/api/v1/intf/stat` 等）
+- `snmp_community`：SNMP v2c community（当前用于 CPU/内存/硬盘）
+- `snmp_port`：SNMP 端口（默认 161，可不填）
 
 #### /probe 参数说明
 - `target`：设备 IP/地址（必填）

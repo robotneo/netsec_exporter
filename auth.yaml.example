@@ -5,7 +5,9 @@ auths:
     username: admin
     password: your-password
 
-  dbapp_token_a:
+  dbapp_api_and_snmp:
     vendor: dbapp
     type: firewall
     token: your-api-token
+    snmp_community: public
+    snmp_port: 161

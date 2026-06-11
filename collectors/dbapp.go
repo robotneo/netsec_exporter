@@ -50,9 +50,57 @@ func (c *DBAPP) Collect(dev core.Device) ([]core.Metric, error) {
 
 	switch dev.Type {
 	case "firewall":
-		return dbappfw.CollectIPLinkStatus(c.client, dev)
+		iplinkMetrics, err := dbappfw.CollectIPLinkStatus(c.client, dev)
+		if err != nil {
+			return nil, err
+		}
+
+		ifMetrics, err := dbappfw.CollectInterfaces(c.client, dev)
+		if err != nil {
+			return iplinkMetrics, nil
+		}
+
+		metrics := append([]core.Metric{}, iplinkMetrics...)
+		metrics = append(metrics, ifMetrics...)
+		cpuMetrics, err := dbappfw.CollectCPUUsagePercentSNMP(dev, c.Timeout)
+		if err == nil {
+			metrics = append(metrics, cpuMetrics...)
+		}
+		memMetrics, err := dbappfw.CollectMemoryUsagePercentSNMP(dev, c.Timeout)
+		if err == nil {
+			metrics = append(metrics, memMetrics...)
+		}
+		diskMetrics, err := dbappfw.CollectDiskUsagePercentSNMP(dev, c.Timeout)
+		if err == nil {
+			metrics = append(metrics, diskMetrics...)
+		}
+		return metrics, nil
 	case "dastgfw":
-		return dbappfw.CollectIPLinkStatus(c.client, dev)
+		iplinkMetrics, err := dbappfw.CollectIPLinkStatus(c.client, dev)
+		if err != nil {
+			return nil, err
+		}
+
+		ifMetrics, err := dbappfw.CollectInterfaces(c.client, dev)
+		if err != nil {
+			return iplinkMetrics, nil
+		}
+
+		metrics := append([]core.Metric{}, iplinkMetrics...)
+		metrics = append(metrics, ifMetrics...)
+		cpuMetrics, err := dbappfw.CollectCPUUsagePercentSNMP(dev, c.Timeout)
+		if err == nil {
+			metrics = append(metrics, cpuMetrics...)
+		}
+		memMetrics, err := dbappfw.CollectMemoryUsagePercentSNMP(dev, c.Timeout)
+		if err == nil {
+			metrics = append(metrics, memMetrics...)
+		}
+		diskMetrics, err := dbappfw.CollectDiskUsagePercentSNMP(dev, c.Timeout)
+		if err == nil {
+			metrics = append(metrics, diskMetrics...)
+		}
+		return metrics, nil
 	default:
 		return nil, fmt.Errorf("unsupported device type for dbapp: %s", dev.Type)
 	}

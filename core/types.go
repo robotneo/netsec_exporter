@@ -1,13 +1,15 @@
 package core
 
 type Device struct {
-	Name     string `yaml:"name"`
-	Host     string `yaml:"host"`
-	Token    string `yaml:"token"`
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
-	Vendor   string `yaml:"vendor"`
-	Type     string `yaml:"type"`
+	Name          string `yaml:"name"`
+	Host          string `yaml:"host"`
+	Token         string `yaml:"token"`
+	Username      string `yaml:"username"`
+	Password      string `yaml:"password"`
+	SNMPCommunity string `yaml:"snmp_community"`
+	SNMPPort      uint16 `yaml:"snmp_port"`
+	Vendor        string `yaml:"vendor"`
+	Type          string `yaml:"type"`
 }
 
 type Metric struct {
