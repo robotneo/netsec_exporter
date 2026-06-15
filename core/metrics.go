@@ -170,6 +170,20 @@ var (
 		},
 		interfaceLabelNames,
 	)
+	interfaceSendBytesTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_interface_traffic_out_bytes_total",
+			Help: "Network security device interface traffic out bytes total",
+		},
+		interfaceLabelNames,
+	)
+	interfaceRecvBytesTotal = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_interface_traffic_in_bytes_total",
+			Help: "Network security device interface traffic in bytes total",
+		},
+		interfaceLabelNames,
+	)
 
 	haEnabled = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
@@ -227,6 +241,8 @@ func InitMetrics() {
 	prometheus.MustRegister(interfaceRecvSpeedBits)
 	prometheus.MustRegister(interfaceSendPackets)
 	prometheus.MustRegister(interfaceRecvPackets)
+	prometheus.MustRegister(interfaceSendBytesTotal)
+	prometheus.MustRegister(interfaceRecvBytesTotal)
 	prometheus.MustRegister(haEnabled)
 	prometheus.MustRegister(haMode)
 	prometheus.MustRegister(deviceUp)
@@ -279,6 +295,10 @@ func SetMetric(m Metric) {
 		interfaceSendPackets.With(m.Labels).Set(m.Value)
 	case "netsec_interface_traffic_in_packets_total":
 		interfaceRecvPackets.With(m.Labels).Set(m.Value)
+	case "netsec_interface_traffic_out_bytes_total":
+		interfaceSendBytesTotal.With(m.Labels).Set(m.Value)
+	case "netsec_interface_traffic_in_bytes_total":
+		interfaceRecvBytesTotal.With(m.Labels).Set(m.Value)
 	case "netsec_ha_enabled":
 		haEnabled.With(m.Labels).Set(m.Value)
 	case "netsec_ha_mode":

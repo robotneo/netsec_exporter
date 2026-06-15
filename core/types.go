@@ -8,6 +8,8 @@ type Device struct {
 	Password      string `yaml:"password"`
 	SNMPCommunity string `yaml:"snmp_community"`
 	SNMPPort      uint16 `yaml:"snmp_port"`
+	SharedKey     string `yaml:"shared_key"`
+	ACPort        uint16 `yaml:"ac_port"`
 	Vendor        string `yaml:"vendor"`
 	Type          string `yaml:"type"`
 }

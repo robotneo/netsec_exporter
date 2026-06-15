@@ -3,9 +3,11 @@ package collectors
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
+	sangforac "netsec_exporter/collectors/sangfor/ac"
 	sangforclient "netsec_exporter/collectors/sangfor/client"
 	sangforfw "netsec_exporter/collectors/sangfor/firewall"
 	sangforhci "netsec_exporter/collectors/sangfor/hci"
@@ -16,6 +18,9 @@ type Sangfor struct {
 	once   sync.Once
 	client *sangforclient.Client
 	sm     *sangforclient.SessionManager
+
+	acMu      sync.Mutex
+	acClients map[string]*sangforclient.ACClient
 
 	hciMu      sync.Mutex
 	hciBundles map[string]hciBundle
@@ -43,6 +48,8 @@ func (c *Sangfor) Collect(dev core.Device) ([]core.Metric, error) {
 	switch dev.Type {
 	case "firewall":
 		return c.collectFirewallV1(dev)
+	case "ac":
+		return c.collectAC(dev)
 	case "hci":
 		return c.collectHCI(dev)
 	default:
@@ -58,8 +65,38 @@ func (c *Sangfor) init() {
 		}
 		c.client = sangforclient.New(timeout, c.InsecureSkipVerify)
 		c.sm = sangforclient.NewSessionManager(c.client, 10*time.Minute)
+		c.acClients = map[string]*sangforclient.ACClient{}
 		c.hciBundles = map[string]hciBundle{}
 	})
+}
+
+func (c *Sangfor) getACClient(dev core.Device) *sangforclient.ACClient {
+	c.acMu.Lock()
+	defer c.acMu.Unlock()
+
+	port := dev.ACPort
+	if port == 0 {
+		port = 9999
+	}
+
+	key := strings.TrimSpace(dev.Host)
+	if !strings.Contains(key, ":") {
+		key = fmt.Sprintf("%s:%d", key, port)
+	}
+
+	if cli, ok := c.acClients[key]; ok {
+		cli.SharedKey = dev.SharedKey
+		return cli
+	}
+
+	timeout := c.Timeout
+	if timeout <= 0 {
+		timeout = 10 * time.Second
+	}
+
+	cli := sangforclient.NewACClient(dev.Host, port, timeout, c.InsecureSkipVerify, dev.SharedKey)
+	c.acClients[key] = cli
+	return cli
 }
 
 func (c *Sangfor) getHCIBundle(host string) hciBundle {
@@ -269,6 +306,70 @@ func (c *Sangfor) collectFirewallV1(dev core.Device) ([]core.Metric, error) {
 	metrics = append(metrics, fanMetrics...)
 	metrics = append(metrics, powerMetrics...)
 	metrics = append(metrics, temperatureMetrics...)
+	return metrics, nil
+}
+
+func (c *Sangfor) collectAC(dev core.Device) ([]core.Metric, error) {
+	if strings.TrimSpace(dev.SharedKey) == "" {
+		return nil, fmt.Errorf("missing shared_key for sangfor ac")
+	}
+
+	ac := c.getACClient(dev)
+
+	systemMetrics, err := sangforac.CollectSystemMetrics(ac, dev)
+	if err != nil {
+		systemMetrics, err = sangforac.CollectSystemMetrics(ac, dev)
+		if err != nil {
+			systemMetrics = nil
+		}
+	}
+
+	userMetrics, err := sangforac.CollectUserMetrics(ac, dev)
+	if err != nil {
+		userMetrics, err = sangforac.CollectUserMetrics(ac, dev)
+		if err != nil {
+			userMetrics = nil
+		}
+	}
+
+	sessionMetrics, err := sangforac.CollectSessionMetrics(ac, dev)
+	if err != nil {
+		sessionMetrics, err = sangforac.CollectSessionMetrics(ac, dev)
+		if err != nil {
+			sessionMetrics = nil
+		}
+	}
+
+	logMetrics, err := sangforac.CollectLogMetrics(ac, dev)
+	if err != nil {
+		logMetrics, err = sangforac.CollectLogMetrics(ac, dev)
+		if err != nil {
+			logMetrics = nil
+		}
+	}
+
+	trafficMetrics, err := sangforac.CollectTrafficMetrics(ac, dev)
+	if err != nil {
+		trafficMetrics, err = sangforac.CollectTrafficMetrics(ac, dev)
+		if err != nil {
+			trafficMetrics = nil
+		}
+	}
+
+	interfaceMetrics, err := sangforac.CollectInterfaceMetrics(ac, dev)
+	if err != nil {
+		interfaceMetrics, err = sangforac.CollectInterfaceMetrics(ac, dev)
+		if err != nil {
+			interfaceMetrics = nil
+		}
+	}
+
+	metrics := append([]core.Metric{}, systemMetrics...)
+	metrics = append(metrics, userMetrics...)
+	metrics = append(metrics, sessionMetrics...)
+	metrics = append(metrics, logMetrics...)
+	metrics = append(metrics, trafficMetrics...)
+	metrics = append(metrics, interfaceMetrics...)
 	return metrics, nil
 }
 

@@ -53,6 +53,8 @@ type authEntry struct {
 	Password      string `yaml:"password"`
 	SNMPCommunity string `yaml:"snmp_community"`
 	SNMPPort      uint16 `yaml:"snmp_port"`
+	SharedKey     string `yaml:"shared_key"`
+	ACPort        uint16 `yaml:"ac_port"`
 }
 
 type authFile struct {
@@ -200,11 +202,16 @@ var metricHelp = map[string]string{
 	"netsec_system_temperature_current_celsius":  "Network security device temperature sensor current temperature in celsius",
 	"netsec_system_temperature_min_celsius":      "Network security device temperature sensor lower alarm threshold in celsius",
 	"netsec_system_temperature_max_celsius":      "Network security device temperature sensor upper alarm threshold in celsius",
+	"netsec_online_users_current":                "Network security device online users (current)",
+	"netsec_online_users_max_limit":              "Network security device maximum online users limit",
+	"netsec_behavior_log_block_current":          "Network security device behavior log block count (current)",
+	"netsec_behavior_log_record_current":         "Network security device behavior log record count (current)",
 	"netsec_session_active_current":              "Network security device active sessions (current)",
 	"netsec_sessions_new_per_second":             "Network security device new sessions per second (REAL-TIME)",
 	"netsec_session_max_limit":                   "Network security device maximum session limit",
 	"netsec_interface_send_bits":                 "Network security device interface total realtime send throughput (bits)",
 	"netsec_interface_recv_bits":                 "Network security device interface total realtime receive throughput (bits)",
+	"netsec_bandwidth_usage_percent":             "Network security device bandwidth usage percent",
 	"netsec_interface_physical_state":            "Network security device interface physical state (1=true, 0=false)",
 	"netsec_interface_link_state":                "Network security device interface link state (1=true, 0=false)",
 	"netsec_interface_mtu_bytes":                 "Network security device interface MTU (bytes)",
@@ -218,6 +225,8 @@ var metricHelp = map[string]string{
 	"netsec_interface_traffic_in_bps":            "Network security device interface traffic in (bps)",
 	"netsec_interface_traffic_out_packets_total": "Network security device interface traffic out packets total",
 	"netsec_interface_traffic_in_packets_total":  "Network security device interface traffic in packets total",
+	"netsec_interface_traffic_out_bytes_total":   "Network security device interface traffic out bytes total",
+	"netsec_interface_traffic_in_bytes_total":    "Network security device interface traffic in bytes total",
 	"netsec_ha_enabled":                          "Network security device HA enabled (1 enabled, 0 disabled)",
 	"netsec_ha_mode":                             "Network security device HA mode (ACTIVE-ACTIVE=1, ACTIVE-PASSIVE=2, MIRROR=3)",
 	"netsec_hci_overview_hosts_total":            "Sangfor SCP/HCI overview: total hosts",
@@ -869,8 +878,10 @@ func main() {
 		dev.Password = a.Password
 		dev.SNMPCommunity = a.SNMPCommunity
 		dev.SNMPPort = a.SNMPPort
+		dev.SharedKey = a.SharedKey
+		dev.ACPort = a.ACPort
 
-		if dev.Token == "" && dev.Username == "" && dev.Password == "" && dev.SNMPCommunity == "" {
+		if dev.Token == "" && dev.Username == "" && dev.Password == "" && dev.SNMPCommunity == "" && dev.SharedKey == "" {
 			ctx.String(http.StatusBadRequest, "auth has no credentials: %s\n", authID)
 			return
 		}
