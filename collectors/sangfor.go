@@ -8,6 +8,7 @@ import (
 	"time"
 
 	sangforac "netsec_exporter/collectors/sangfor/ac"
+	sangforad "netsec_exporter/collectors/sangfor/ad"
 	sangforclient "netsec_exporter/collectors/sangfor/client"
 	sangforfw "netsec_exporter/collectors/sangfor/firewall"
 	sangforhci "netsec_exporter/collectors/sangfor/hci"
@@ -50,11 +51,44 @@ func (c *Sangfor) Collect(dev core.Device) ([]core.Metric, error) {
 		return c.collectFirewallV1(dev)
 	case "ac":
 		return c.collectAC(dev)
+	case "ad":
+		return c.collectAD(dev)
 	case "hci":
 		return c.collectHCI(dev)
 	default:
 		return nil, fmt.Errorf("unsupported device type for sangfor: %s", dev.Type)
 	}
+}
+
+func (c *Sangfor) collectAD(dev core.Device) ([]core.Metric, error) {
+	systemMetrics, err := sangforad.CollectSystemMetrics(dev)
+	if err != nil {
+		systemMetrics, err = sangforad.CollectSystemMetrics(dev)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	sessionMetrics, err := sangforad.CollectSessionMetrics(dev)
+	if err != nil {
+		sessionMetrics, err = sangforad.CollectSessionMetrics(dev)
+		if err != nil {
+			sessionMetrics = nil
+		}
+	}
+
+	interfaceMetrics, err := sangforad.CollectInterfaceMetrics(dev)
+	if err != nil {
+		interfaceMetrics, err = sangforad.CollectInterfaceMetrics(dev)
+		if err != nil {
+			interfaceMetrics = nil
+		}
+	}
+
+	metrics := append([]core.Metric{}, systemMetrics...)
+	metrics = append(metrics, sessionMetrics...)
+	metrics = append(metrics, interfaceMetrics...)
+	return metrics, nil
 }
 
 func (c *Sangfor) init() {
