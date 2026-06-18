@@ -5,6 +5,32 @@ auths:
     username: admin
     password: your-password
 
+  sangfor_ac_01:
+    vendor: sangfor
+    type: ac
+    shared_key: your-shared-key
+    ac_port: 9999
+    snmp_community: public
+    snmp_port: 161
+
+  sangfor_ad_01:
+    vendor: sangfor
+    type: ad
+    snmp_community: public
+    snmp_port: 161
+
+  sangfor_hci_01:
+    vendor: sangfor
+    type: hci
+    username: admin
+    password: your-password
+
+  qianxin_fw_01:
+    vendor: qianxin
+    type: firewall
+    username: admin
+    password: your-password
+
   dbapp_api_and_snmp:
     vendor: dbapp
     type: firewall

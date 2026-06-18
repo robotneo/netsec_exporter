@@ -696,6 +696,11 @@ func main() {
               <datalist id="vendorList">
                 <option value="sangfor"></option>
                 <option value="dbapp"></option>
+                <option value="qianxin"></option>
+                <option value="fortinet"></option>
+                <option value="hillstone"></option>
+                <option value="h3c"></option>
+                <option value="huawei"></option>
               </datalist>
             </div>
             <div class="field">
@@ -703,6 +708,8 @@ func main() {
               <input id="type" placeholder="firewall" list="typeList" />
               <datalist id="typeList">
                 <option value="firewall"></option>
+                <option value="ac"></option>
+                <option value="ad"></option>
                 <option value="hci"></option>
               </datalist>
             </div>
