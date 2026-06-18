@@ -1,13 +1,24 @@
 package firewall
 
 import (
+	"context"
+
 	"netsec_exporter/collectors/qianxin/client"
 	"netsec_exporter/core"
 )
 
-// CollectHealthMetrics 承载风扇、电源、温度等健康类指标。
-func CollectHealthMetrics(c *client.Client, dev core.Device) ([]core.Metric, error) {
-	_ = c
-	_ = dev
-	return nil, nil
+func CollectHealthMetrics(c *client.Client, sess client.Session, dev core.Device) ([]core.Metric, error) {
+	resp, err := fetchSystemResource(context.Background(), c, sess, dev)
+	if err != nil {
+		return nil, err
+	}
+
+	var metrics []core.Metric
+	if ms, err := buildFanMetrics(resp); err == nil {
+		metrics = append(metrics, ms...)
+	}
+	if ms, err := buildPowerMetrics(resp); err == nil {
+		metrics = append(metrics, ms...)
+	}
+	return metrics, nil
 }

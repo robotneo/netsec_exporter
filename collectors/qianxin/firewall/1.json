@@ -1,0 +1,126 @@
+
+[
+    {
+        "head": {
+            "module": "dashboard",
+            "function": "get_system_resource",
+            "page_index": 1,
+            "page_size": 20
+        },
+        "body": {}
+    }
+]
+
+
+
+
+
+{
+    "head": {
+        "module": "dashboard",
+        "function": "get_system_resource",
+        "error_code": 0,
+        "error_string": "执行成功",
+        "page_index": 1,
+        "page_size": 20,
+        "total": -1,
+        "smacid": -1
+    },
+    "data": {
+        "memery": {
+            "useage": 54,
+            "total": 16319992,
+            "ecc_info": "Error Correction Type: None",
+            "rank_info": "Rank: Unknown"
+        },
+        "memory_cores": [
+            {
+                "name": "system",
+                "free": 1872828,
+                "useage": 54
+            },
+            {
+                "name": "core0",
+                "free": 326904,
+                "useage": 34
+            },
+            {
+                "name": "corex",
+                "free": 7166309,
+                "useage": 1
+            }
+        ],
+        "addrpool": {
+            "usage": 15
+        },
+        "cf": {
+            "use": 1523,
+            "total": 6453,
+            "free": 4929,
+            "useage": 9
+        },
+        "ssd": {
+            "use": 50177,
+            "total": 937444,
+            "free": 887267,
+            "useage": 9
+        },
+        "cpu": [
+            {
+                "name": "cpu0",
+                "useage": 13,
+                "temp": 35,
+                "core": [
+                    {
+                        "name": "core0",
+                        "useage": 25
+                    },
+                    {
+                        "name": "core1",
+                        "useage": 2
+                    }
+                ]
+            }
+        ],
+        "fan": [
+            {
+                "name": "CPU0 Fan",
+                "speed": 7500,
+                "status": "true",
+                "flag": 0
+            },
+            {
+                "name": "System Fan(Center)",
+                "speed": 4591,
+                "status": "true",
+                "flag": 0
+            },
+            {
+                "name": "System Fan(Left)",
+                "speed": 4545,
+                "status": "true",
+                "flag": 0
+            },
+            {
+                "name": "System Fan(Right)",
+                "speed": 4485,
+                "status": "true",
+                "flag": 0
+            }
+        ],
+        "display_fan": {
+            "speed": 7500,
+            "flag": 0
+        },
+        "power": [
+            {
+                "name": "Power",
+                "state": "normal"
+            }
+        ],
+        "power_supply": {
+            "capacity": "23W",
+            "view": 0
+        }
+    }
+}

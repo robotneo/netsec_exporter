@@ -82,12 +82,19 @@ auths:
     token: your-api-token
     snmp_community: public
     snmp_port: 161
+
+  qianxin_fw_01:
+    vendor: qianxin
+    type: firewall
+    username: admin
+    password: your-password
 ```
 
 说明：
 - `token`：DBAPP/明御的 REST API 认证（当前用于 `iplink`、`/api/v1/intf`、`/api/v1/intf/stat` 等）
 - `snmp_community`：SNMP v2c community（当前用于 CPU/内存/硬盘）
 - `snmp_port`：SNMP 端口（默认 161，可不填）
+- `username/password`：奇安信网神防火墙当前使用账号密码登录，Exporter 自动获取 `token + Cookie`
 
 #### /probe 参数说明
 - `target`：设备 IP/地址（必填）
@@ -105,6 +112,15 @@ auths:
 - **认证请求头**：`Authorization: {认证方式} {认证参数}`
   - 支持 `AWS4-HMAC-SHA256`（EC2 签名）
   - 支持 `Token`（示例：`Authorization: Token <token_id>`）
+
+### 3.3 专项说明文档
+
+以下设备/模块已经整理了单独说明文档，可直接跳转查看：
+
+- 深信服 AC（行为管理设备）：[README_AC.md](file:///home/code/projects/netsec_exporter/README_AC.md)
+- 深信服 AD（应用交付 / ADC）：[README_AD.md](file:///home/code/projects/netsec_exporter/README_AD.md)
+- 深信服 HCI / SCP：[README_HCI.md](file:///home/code/projects/netsec_exporter/README_HCI.md)
+- 奇安信网神防火墙：[README_QIANXIN.md](file:///home/code/projects/netsec_exporter/README_QIANXIN.md)
 
 ### 4. Prometheus 配置示例（static_configs）
 以下示例使用 `static_configs` 管理多台设备，并通过 relabel 将 labels 转成 `/probe` 参数：

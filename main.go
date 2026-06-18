@@ -192,6 +192,9 @@ var metricHelp = map[string]string{
 	"netsec_iplink_status":                       "Network security device IP link status",
 	"netsec_system_cpu_usage_percent":            "Network security device CPU usage percent",
 	"netsec_system_memory_usage_percent":         "Network security device memory usage percent",
+	"netsec_system_memory_total_bytes":           "Network security device memory total capacity in bytes",
+	"netsec_system_memory_used_bytes":            "Network security device memory used capacity in bytes",
+	"netsec_system_memory_free_bytes":            "Network security device memory free capacity in bytes",
 	"netsec_system_disk_usage_percent":           "Network security device disk usage percent",
 	"netsec_system_version_info":                 "Network security device system version info (1 success, 0 failed; version is exposed in the version label)",
 	"netsec_system_uptime_seconds":               "Network security device uptime in seconds",
@@ -199,6 +202,7 @@ var metricHelp = map[string]string{
 	"netsec_system_fan_status":                   "Network security device fan status/state",
 	"netsec_system_fan_speed_rpm":                "Network security device fan speed in RPM",
 	"netsec_system_power_status":                 "Network security device power status (1 normal, 0 abnormal)",
+	"netsec_system_power_capacity_watts":         "Network security device power capacity reported by vendor API in watts",
 	"netsec_system_temperature_status":           "Network security device temperature sensor status (1 normal, 0 abnormal)",
 	"netsec_system_temperature_current_celsius":  "Network security device temperature sensor current temperature in celsius",
 	"netsec_system_temperature_min_celsius":      "Network security device temperature sensor lower alarm threshold in celsius",
@@ -246,6 +250,7 @@ var metricHelp = map[string]string{
 	"netsec_link_oper_state":                     "Network security device logical link state (0 offline, 1 normal, 2 busy)",
 	"netsec_link_traffic_in_bps":                 "Network security device logical link traffic in (bps)",
 	"netsec_link_traffic_out_bps":                "Network security device logical link traffic out (bps)",
+	"netsec_ha_status":                           "Network security device HA status reported by vendor API",
 	"netsec_ha_enabled":                          "Network security device HA enabled (1 enabled, 0 disabled)",
 	"netsec_ha_mode":                             "Network security device HA mode (ACTIVE-ACTIVE=1, ACTIVE-PASSIVE=2, MIRROR=3)",
 	"netsec_hci_overview_hosts_total":            "Sangfor SCP/HCI overview: total hosts",
@@ -343,6 +348,15 @@ func (c *probeCollector) emitProbeMetrics(ch chan<- prometheus.Metric, start tim
 		"instance":    c.device.Host,
 		"vendor":      c.device.Vendor,
 		"role":        c.device.Type,
+	}
+	for _, m := range metrics {
+		if m.Labels == nil {
+			continue
+		}
+		if hostname := strings.TrimSpace(m.Labels["hostname"]); hostname != "" {
+			baseLabels["hostname"] = hostname
+			break
+		}
 	}
 
 	up := 1.0
