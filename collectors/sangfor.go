@@ -358,27 +358,11 @@ func (c *Sangfor) collectAC(dev core.Device) ([]core.Metric, error) {
 		}
 	}
 
-	userMetrics, err := sangforac.CollectUserMetrics(ac, dev)
-	if err != nil {
-		userMetrics, err = sangforac.CollectUserMetrics(ac, dev)
-		if err != nil {
-			userMetrics = nil
-		}
-	}
-
 	sessionMetrics, err := sangforac.CollectSessionMetrics(ac, dev)
 	if err != nil {
 		sessionMetrics, err = sangforac.CollectSessionMetrics(ac, dev)
 		if err != nil {
 			sessionMetrics = nil
-		}
-	}
-
-	logMetrics, err := sangforac.CollectLogMetrics(ac, dev)
-	if err != nil {
-		logMetrics, err = sangforac.CollectLogMetrics(ac, dev)
-		if err != nil {
-			logMetrics = nil
 		}
 	}
 
@@ -399,9 +383,7 @@ func (c *Sangfor) collectAC(dev core.Device) ([]core.Metric, error) {
 	}
 
 	metrics := append([]core.Metric{}, systemMetrics...)
-	metrics = append(metrics, userMetrics...)
 	metrics = append(metrics, sessionMetrics...)
-	metrics = append(metrics, logMetrics...)
 	metrics = append(metrics, trafficMetrics...)
 	metrics = append(metrics, interfaceMetrics...)
 	return metrics, nil

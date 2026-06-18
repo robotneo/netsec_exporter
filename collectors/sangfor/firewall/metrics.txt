@@ -1,0 +1,367 @@
+# HELP netsec_device_up Network security device status
+# TYPE netsec_device_up gauge
+netsec_device_up{device_name="sangfor-fw-01",instance="192.168.254.1",role="firewall",vendor="sangfor"} 1
+# HELP netsec_ha_enabled Network security device HA enabled (1 enabled, 0 disabled)
+# TYPE netsec_ha_enabled gauge
+netsec_ha_enabled{device_name="sangfor-fw-01",instance="192.168.254.1",role="firewall",vendor="sangfor"} 0
+# HELP netsec_ha_mode Network security device HA mode (ACTIVE-ACTIVE=1, ACTIVE-PASSIVE=2, MIRROR=3)
+# TYPE netsec_ha_mode gauge
+netsec_ha_mode{device_name="sangfor-fw-01",instance="192.168.254.1",role="firewall",vendor="sangfor"} 2
+# HELP netsec_interface_category Network security device interface category (PHYSICALIF=1, else=0)
+# TYPE netsec_interface_category gauge
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth0",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-20",role="firewall",vendor="sangfor",zone="oobm-area"} 0
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth1",instance="192.168.254.1",ip_addr="192.168.254.1/24",mac="c4-a5-59-30-06-2b",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth10",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-22",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth11",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-23",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth12",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-24",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth13",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-25",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth14",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-26",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth15",instance="192.168.254.1",ip_addr="10.52.251.11/24",mac="c4-a5-59-30-06-27",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth16",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-28",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth17",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-33",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth18",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-34",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth19",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-29",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth20",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2a",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth21",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-35",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth22",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-36",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth5",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2f",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth6",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-30",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth7",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-31",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth8",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-32",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="",device_name="sangfor-fw-01",if_name="eth9",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-21",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_category{description="电信专线50M",device_name="sangfor-fw-01",if_name="eth4",instance="192.168.254.1",ip_addr="180.169.95.234/29,180.169.95.235/29,180.169.95.236/29,180.169.95.237/29,180.169.95.238/29",mac="c4-a5-59-30-06-2e",role="firewall",vendor="sangfor",zone="WAN固定IP（电信专线）"} 1
+netsec_interface_category{description="电信拨号1G",device_name="sangfor-fw-01",if_name="eth2",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2c",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1
+netsec_interface_category{description="联通拨号1G",device_name="sangfor-fw-01",if_name="eth3",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2d",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1
+# HELP netsec_interface_layer_mode Network security device interface layer mode (BRIDGE=0, ROUTE=1)
+# TYPE netsec_interface_layer_mode gauge
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth0",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-20",role="firewall",vendor="sangfor",zone="oobm-area"} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth1",instance="192.168.254.1",ip_addr="192.168.254.1/24",mac="c4-a5-59-30-06-2b",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth10",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-22",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth11",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-23",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth12",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-24",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth13",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-25",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth14",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-26",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth15",instance="192.168.254.1",ip_addr="10.52.251.11/24",mac="c4-a5-59-30-06-27",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth16",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-28",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth17",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-33",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth18",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-34",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth19",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-29",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth20",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2a",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth21",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-35",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth22",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-36",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth5",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2f",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth6",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-30",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth7",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-31",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth8",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-32",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="",device_name="sangfor-fw-01",if_name="eth9",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-21",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_layer_mode{description="电信专线50M",device_name="sangfor-fw-01",if_name="eth4",instance="192.168.254.1",ip_addr="180.169.95.234/29,180.169.95.235/29,180.169.95.236/29,180.169.95.237/29,180.169.95.238/29",mac="c4-a5-59-30-06-2e",role="firewall",vendor="sangfor",zone="WAN固定IP（电信专线）"} 1
+netsec_interface_layer_mode{description="电信拨号1G",device_name="sangfor-fw-01",if_name="eth2",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2c",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1
+netsec_interface_layer_mode{description="联通拨号1G",device_name="sangfor-fw-01",if_name="eth3",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2d",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1
+# HELP netsec_interface_link_state Network security device interface link state (1=true, 0=false)
+# TYPE netsec_interface_link_state gauge
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth0",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-20",role="firewall",vendor="sangfor",zone="oobm-area"} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth1",instance="192.168.254.1",ip_addr="192.168.254.1/24",mac="c4-a5-59-30-06-2b",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 1
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth10",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-22",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth11",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-23",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth12",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-24",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth13",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-25",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth14",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-26",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth15",instance="192.168.254.1",ip_addr="10.52.251.11/24",mac="c4-a5-59-30-06-27",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 1
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth16",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-28",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth17",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-33",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth18",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-34",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth19",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-29",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth20",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2a",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth21",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-35",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth22",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-36",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth5",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2f",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth6",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-30",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth7",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-31",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth8",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-32",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-fw-01",if_name="eth9",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-21",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="电信专线50M",device_name="sangfor-fw-01",if_name="eth4",instance="192.168.254.1",ip_addr="180.169.95.234/29,180.169.95.235/29,180.169.95.236/29,180.169.95.237/29,180.169.95.238/29",mac="c4-a5-59-30-06-2e",role="firewall",vendor="sangfor",zone="WAN固定IP（电信专线）"} 1
+netsec_interface_link_state{description="电信拨号1G",device_name="sangfor-fw-01",if_name="eth2",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2c",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1
+netsec_interface_link_state{description="联通拨号1G",device_name="sangfor-fw-01",if_name="eth3",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2d",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1
+# HELP netsec_interface_media_type Network security device interface media type (TP=0, FIBER=1)
+# TYPE netsec_interface_media_type gauge
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth0",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-20",role="firewall",vendor="sangfor",zone="oobm-area"} 0
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth1",instance="192.168.254.1",ip_addr="192.168.254.1/24",mac="c4-a5-59-30-06-2b",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 0
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth10",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-22",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth11",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-23",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth12",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-24",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth13",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-25",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth14",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-26",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth15",instance="192.168.254.1",ip_addr="10.52.251.11/24",mac="c4-a5-59-30-06-27",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 0
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth16",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-28",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth17",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-33",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth18",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-34",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth19",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-29",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth20",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2a",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth21",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-35",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth22",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-36",role="firewall",vendor="sangfor",zone=""} 1
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth5",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2f",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth6",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-30",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth7",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-31",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth8",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-32",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_media_type{description="",device_name="sangfor-fw-01",if_name="eth9",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-21",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_media_type{description="电信专线50M",device_name="sangfor-fw-01",if_name="eth4",instance="192.168.254.1",ip_addr="180.169.95.234/29,180.169.95.235/29,180.169.95.236/29,180.169.95.237/29,180.169.95.238/29",mac="c4-a5-59-30-06-2e",role="firewall",vendor="sangfor",zone="WAN固定IP（电信专线）"} 0
+netsec_interface_media_type{description="电信拨号1G",device_name="sangfor-fw-01",if_name="eth2",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2c",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 0
+netsec_interface_media_type{description="联通拨号1G",device_name="sangfor-fw-01",if_name="eth3",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2d",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 0
+# HELP netsec_interface_mtu_bytes Network security device interface MTU (bytes)
+# TYPE netsec_interface_mtu_bytes gauge
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth0",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-20",role="firewall",vendor="sangfor",zone="oobm-area"} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth1",instance="192.168.254.1",ip_addr="192.168.254.1/24",mac="c4-a5-59-30-06-2b",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth10",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-22",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth11",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-23",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth12",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-24",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth13",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-25",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth14",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-26",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth15",instance="192.168.254.1",ip_addr="10.52.251.11/24",mac="c4-a5-59-30-06-27",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth16",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-28",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth17",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-33",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth18",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-34",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth19",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-29",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth20",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2a",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth21",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-35",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth22",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-36",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth5",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2f",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth6",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-30",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth7",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-31",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth8",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-32",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="",device_name="sangfor-fw-01",if_name="eth9",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-21",role="firewall",vendor="sangfor",zone=""} 1500
+netsec_interface_mtu_bytes{description="电信专线50M",device_name="sangfor-fw-01",if_name="eth4",instance="192.168.254.1",ip_addr="180.169.95.234/29,180.169.95.235/29,180.169.95.236/29,180.169.95.237/29,180.169.95.238/29",mac="c4-a5-59-30-06-2e",role="firewall",vendor="sangfor",zone="WAN固定IP（电信专线）"} 1500
+netsec_interface_mtu_bytes{description="电信拨号1G",device_name="sangfor-fw-01",if_name="eth2",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2c",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1492
+netsec_interface_mtu_bytes{description="联通拨号1G",device_name="sangfor-fw-01",if_name="eth3",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2d",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1492
+# HELP netsec_interface_physical_state Network security device interface physical state (1=true, 0=false)
+# TYPE netsec_interface_physical_state gauge
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth0",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-20",role="firewall",vendor="sangfor",zone="oobm-area"} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth1",instance="192.168.254.1",ip_addr="192.168.254.1/24",mac="c4-a5-59-30-06-2b",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 1
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth10",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-22",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth11",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-23",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth12",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-24",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth13",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-25",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth14",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-26",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth15",instance="192.168.254.1",ip_addr="10.52.251.11/24",mac="c4-a5-59-30-06-27",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 1
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth16",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-28",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth17",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-33",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth18",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-34",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth19",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-29",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth20",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2a",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth21",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-35",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth22",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-36",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth5",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2f",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth6",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-30",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth7",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-31",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth8",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-32",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="",device_name="sangfor-fw-01",if_name="eth9",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-21",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_physical_state{description="电信专线50M",device_name="sangfor-fw-01",if_name="eth4",instance="192.168.254.1",ip_addr="180.169.95.234/29,180.169.95.235/29,180.169.95.236/29,180.169.95.237/29,180.169.95.238/29",mac="c4-a5-59-30-06-2e",role="firewall",vendor="sangfor",zone="WAN固定IP（电信专线）"} 1
+netsec_interface_physical_state{description="电信拨号1G",device_name="sangfor-fw-01",if_name="eth2",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2c",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1
+netsec_interface_physical_state{description="联通拨号1G",device_name="sangfor-fw-01",if_name="eth3",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2d",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1
+# HELP netsec_interface_ping_up Network security device interface ping up (1=true, 0=false)
+# TYPE netsec_interface_ping_up gauge
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth0",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-20",role="firewall",vendor="sangfor",zone="oobm-area"} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth1",instance="192.168.254.1",ip_addr="192.168.254.1/24",mac="c4-a5-59-30-06-2b",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 1
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth10",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-22",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth11",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-23",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth12",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-24",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth13",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-25",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth14",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-26",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth15",instance="192.168.254.1",ip_addr="10.52.251.11/24",mac="c4-a5-59-30-06-27",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 1
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth16",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-28",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth17",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-33",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth18",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-34",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth19",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-29",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth20",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2a",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth21",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-35",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth22",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-36",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth5",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2f",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth6",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-30",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth7",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-31",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth8",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-32",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="",device_name="sangfor-fw-01",if_name="eth9",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-21",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_ping_up{description="电信专线50M",device_name="sangfor-fw-01",if_name="eth4",instance="192.168.254.1",ip_addr="180.169.95.234/29,180.169.95.235/29,180.169.95.236/29,180.169.95.237/29,180.169.95.238/29",mac="c4-a5-59-30-06-2e",role="firewall",vendor="sangfor",zone="WAN固定IP（电信专线）"} 1
+netsec_interface_ping_up{description="电信拨号1G",device_name="sangfor-fw-01",if_name="eth2",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2c",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1
+netsec_interface_ping_up{description="联通拨号1G",device_name="sangfor-fw-01",if_name="eth3",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2d",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1
+# HELP netsec_interface_recv_bits Network security device interface total realtime receive throughput (bits)
+# TYPE netsec_interface_recv_bits gauge
+netsec_interface_recv_bits{device_name="sangfor-fw-01",instance="192.168.254.1",role="firewall",vendor="sangfor"} 4.5e+07
+# HELP netsec_interface_role Network security device interface role (WAN=1, NON-WAN=0)
+# TYPE netsec_interface_role gauge
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth0",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-20",role="firewall",vendor="sangfor",zone="oobm-area"} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth1",instance="192.168.254.1",ip_addr="192.168.254.1/24",mac="c4-a5-59-30-06-2b",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth10",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-22",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth11",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-23",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth12",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-24",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth13",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-25",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth14",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-26",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth15",instance="192.168.254.1",ip_addr="10.52.251.11/24",mac="c4-a5-59-30-06-27",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth16",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-28",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth17",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-33",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth18",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-34",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth19",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-29",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth20",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2a",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth21",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-35",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth22",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-36",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth5",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2f",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth6",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-30",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth7",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-31",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth8",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-32",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="",device_name="sangfor-fw-01",if_name="eth9",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-21",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_role{description="电信专线50M",device_name="sangfor-fw-01",if_name="eth4",instance="192.168.254.1",ip_addr="180.169.95.234/29,180.169.95.235/29,180.169.95.236/29,180.169.95.237/29,180.169.95.238/29",mac="c4-a5-59-30-06-2e",role="firewall",vendor="sangfor",zone="WAN固定IP（电信专线）"} 1
+netsec_interface_role{description="电信拨号1G",device_name="sangfor-fw-01",if_name="eth2",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2c",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1
+netsec_interface_role{description="联通拨号1G",device_name="sangfor-fw-01",if_name="eth3",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2d",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1
+# HELP netsec_interface_send_bits Network security device interface total realtime send throughput (bits)
+# TYPE netsec_interface_send_bits gauge
+netsec_interface_send_bits{device_name="sangfor-fw-01",instance="192.168.254.1",role="firewall",vendor="sangfor"} 6e+06
+# HELP netsec_interface_speed_mbps Network security device interface negotiated speed (Mbps)
+# TYPE netsec_interface_speed_mbps gauge
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth0",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-20",role="firewall",vendor="sangfor",zone="oobm-area"} 10
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth1",instance="192.168.254.1",ip_addr="192.168.254.1/24",mac="c4-a5-59-30-06-2b",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 1000
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth10",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-22",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth11",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-23",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth12",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-24",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth13",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-25",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth14",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-26",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth15",instance="192.168.254.1",ip_addr="10.52.251.11/24",mac="c4-a5-59-30-06-27",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 1000
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth16",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-28",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth17",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-33",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth18",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-34",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth19",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-29",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth20",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2a",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth21",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-35",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth22",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-36",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth5",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2f",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth6",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-30",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth7",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-31",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth8",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-32",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="",device_name="sangfor-fw-01",if_name="eth9",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-21",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_speed_mbps{description="电信专线50M",device_name="sangfor-fw-01",if_name="eth4",instance="192.168.254.1",ip_addr="180.169.95.234/29,180.169.95.235/29,180.169.95.236/29,180.169.95.237/29,180.169.95.238/29",mac="c4-a5-59-30-06-2e",role="firewall",vendor="sangfor",zone="WAN固定IP（电信专线）"} 100
+netsec_interface_speed_mbps{description="电信拨号1G",device_name="sangfor-fw-01",if_name="eth2",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2c",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1000
+netsec_interface_speed_mbps{description="联通拨号1G",device_name="sangfor-fw-01",if_name="eth3",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2d",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 1000
+# HELP netsec_interface_traffic_in_bps Network security device interface traffic in (bps)
+# TYPE netsec_interface_traffic_in_bps gauge
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth0",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-20",role="firewall",vendor="sangfor",zone="oobm-area"} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth1",instance="192.168.254.1",ip_addr="192.168.254.1/24",mac="c4-a5-59-30-06-2b",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 6e+06
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth10",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-22",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth11",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-23",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth12",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-24",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth13",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-25",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth14",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-26",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth15",instance="192.168.254.1",ip_addr="10.52.251.11/24",mac="c4-a5-59-30-06-27",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 408
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth16",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-28",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth17",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-33",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth18",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-34",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth19",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-29",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth20",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2a",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth21",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-35",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth22",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-36",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth5",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2f",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth6",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-30",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth7",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-31",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth8",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-32",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="",device_name="sangfor-fw-01",if_name="eth9",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-21",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bps{description="电信专线50M",device_name="sangfor-fw-01",if_name="eth4",instance="192.168.254.1",ip_addr="180.169.95.234/29,180.169.95.235/29,180.169.95.236/29,180.169.95.237/29,180.169.95.238/29",mac="c4-a5-59-30-06-2e",role="firewall",vendor="sangfor",zone="WAN固定IP（电信专线）"} 11000
+netsec_interface_traffic_in_bps{description="电信拨号1G",device_name="sangfor-fw-01",if_name="eth2",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2c",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 4.5e+07
+netsec_interface_traffic_in_bps{description="联通拨号1G",device_name="sangfor-fw-01",if_name="eth3",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2d",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 322000
+# HELP netsec_interface_traffic_in_packets_total Network security device interface traffic in packets total
+# TYPE netsec_interface_traffic_in_packets_total gauge
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth0",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-20",role="firewall",vendor="sangfor",zone="oobm-area"} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth1",instance="192.168.254.1",ip_addr="192.168.254.1/24",mac="c4-a5-59-30-06-2b",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 3391
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth10",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-22",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth11",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-23",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth12",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-24",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth13",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-25",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth14",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-26",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth15",instance="192.168.254.1",ip_addr="10.52.251.11/24",mac="c4-a5-59-30-06-27",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 1
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth16",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-28",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth17",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-33",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth18",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-34",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth19",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-29",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth20",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2a",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth21",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-35",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth22",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-36",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth5",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2f",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth6",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-30",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth7",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-31",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth8",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-32",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="",device_name="sangfor-fw-01",if_name="eth9",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-21",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_packets_total{description="电信专线50M",device_name="sangfor-fw-01",if_name="eth4",instance="192.168.254.1",ip_addr="180.169.95.234/29,180.169.95.235/29,180.169.95.236/29,180.169.95.237/29,180.169.95.238/29",mac="c4-a5-59-30-06-2e",role="firewall",vendor="sangfor",zone="WAN固定IP（电信专线）"} 14
+netsec_interface_traffic_in_packets_total{description="电信拨号1G",device_name="sangfor-fw-01",if_name="eth2",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2c",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 4640
+netsec_interface_traffic_in_packets_total{description="联通拨号1G",device_name="sangfor-fw-01",if_name="eth3",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2d",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 273
+# HELP netsec_interface_traffic_out_bps Network security device interface traffic out (bps)
+# TYPE netsec_interface_traffic_out_bps gauge
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth0",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-20",role="firewall",vendor="sangfor",zone="oobm-area"} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth1",instance="192.168.254.1",ip_addr="192.168.254.1/24",mac="c4-a5-59-30-06-2b",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 4.3e+07
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth10",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-22",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth11",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-23",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth12",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-24",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth13",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-25",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth14",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-26",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth15",instance="192.168.254.1",ip_addr="10.52.251.11/24",mac="c4-a5-59-30-06-27",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 464
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth16",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-28",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth17",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-33",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth18",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-34",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth19",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-29",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth20",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2a",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth21",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-35",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth22",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-36",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth5",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2f",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth6",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-30",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth7",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-31",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth8",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-32",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="",device_name="sangfor-fw-01",if_name="eth9",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-21",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bps{description="电信专线50M",device_name="sangfor-fw-01",if_name="eth4",instance="192.168.254.1",ip_addr="180.169.95.234/29,180.169.95.235/29,180.169.95.236/29,180.169.95.237/29,180.169.95.238/29",mac="c4-a5-59-30-06-2e",role="firewall",vendor="sangfor",zone="WAN固定IP（电信专线）"} 8000
+netsec_interface_traffic_out_bps{description="电信拨号1G",device_name="sangfor-fw-01",if_name="eth2",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2c",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 3e+06
+netsec_interface_traffic_out_bps{description="联通拨号1G",device_name="sangfor-fw-01",if_name="eth3",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2d",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 3e+06
+# HELP netsec_interface_traffic_out_packets_total Network security device interface traffic out packets total
+# TYPE netsec_interface_traffic_out_packets_total gauge
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth0",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-20",role="firewall",vendor="sangfor",zone="oobm-area"} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth1",instance="192.168.254.1",ip_addr="192.168.254.1/24",mac="c4-a5-59-30-06-2b",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 4819
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth10",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-22",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth11",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-23",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth12",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-24",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth13",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-25",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth14",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-26",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth15",instance="192.168.254.1",ip_addr="10.52.251.11/24",mac="c4-a5-59-30-06-27",role="firewall",vendor="sangfor",zone="LAN（办公网）"} 2
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth16",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-28",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth17",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-33",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth18",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-34",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth19",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-29",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth20",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2a",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth21",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-35",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth22",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-36",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth5",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2f",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth6",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-30",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth7",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-31",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth8",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-32",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="",device_name="sangfor-fw-01",if_name="eth9",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-21",role="firewall",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_packets_total{description="电信专线50M",device_name="sangfor-fw-01",if_name="eth4",instance="192.168.254.1",ip_addr="180.169.95.234/29,180.169.95.235/29,180.169.95.236/29,180.169.95.237/29,180.169.95.238/29",mac="c4-a5-59-30-06-2e",role="firewall",vendor="sangfor",zone="WAN固定IP（电信专线）"} 14
+netsec_interface_traffic_out_packets_total{description="电信拨号1G",device_name="sangfor-fw-01",if_name="eth2",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2c",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 2987
+netsec_interface_traffic_out_packets_total{description="联通拨号1G",device_name="sangfor-fw-01",if_name="eth3",instance="192.168.254.1",ip_addr="",mac="c4-a5-59-30-06-2d",role="firewall",vendor="sangfor",zone="WAN动态IP（拨号）"} 425
+# HELP netsec_scrape_duration_seconds Network security device scrape duration
+# TYPE netsec_scrape_duration_seconds gauge
+netsec_scrape_duration_seconds{device_name="sangfor-fw-01",instance="192.168.254.1",role="firewall",vendor="sangfor"} 0.552587534
+# HELP netsec_session_active_current Network security device active sessions (current)
+# TYPE netsec_session_active_current gauge
+netsec_session_active_current{device_name="sangfor-fw-01",instance="192.168.254.1",role="firewall",vendor="sangfor"} 7027
+# HELP netsec_sessions_new_per_second Network security device new sessions per second (REAL-TIME)
+# TYPE netsec_sessions_new_per_second gauge
+netsec_sessions_new_per_second{device_name="sangfor-fw-01",instance="192.168.254.1",role="firewall",vendor="sangfor"} 95
+# HELP netsec_system_boot_time_seconds Network security device boot time in seconds since epoch
+# TYPE netsec_system_boot_time_seconds gauge
+netsec_system_boot_time_seconds{device_name="sangfor-fw-01",instance="192.168.254.1",role="firewall",vendor="sangfor"} 1.761308331e+09
+# HELP netsec_system_cpu_usage_percent Network security device CPU usage percent
+# TYPE netsec_system_cpu_usage_percent gauge
+netsec_system_cpu_usage_percent{device_name="sangfor-fw-01",instance="192.168.254.1",role="firewall",vendor="sangfor"} 17
+# HELP netsec_system_disk_usage_percent Network security device disk usage percent
+# TYPE netsec_system_disk_usage_percent gauge
+netsec_system_disk_usage_percent{device_name="sangfor-fw-01",instance="192.168.254.1",role="firewall",vendor="sangfor"} 24
+# HELP netsec_system_memory_usage_percent Network security device memory usage percent
+# TYPE netsec_system_memory_usage_percent gauge
+netsec_system_memory_usage_percent{device_name="sangfor-fw-01",instance="192.168.254.1",role="firewall",vendor="sangfor"} 46
+# HELP netsec_system_uptime_seconds Network security device uptime in seconds
+# TYPE netsec_system_uptime_seconds gauge
+netsec_system_uptime_seconds{device_name="sangfor-fw-01",instance="192.168.254.1",role="firewall",vendor="sangfor"} 2.046882e+07
+# HELP netsec_system_version_info Network security device system version info (1 success, 0 failed; version is exposed in the version label)
+# TYPE netsec_system_version_info gauge
+netsec_system_version_info{device_name="sangfor-fw-01",instance="192.168.254.1",role="firewall",vendor="sangfor",version="AF8.0.95.2062"} 1
