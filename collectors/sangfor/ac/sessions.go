@@ -14,6 +14,7 @@ import (
 // CollectSessionMetrics 用于承载 AC 的会话相关指标。
 func CollectSessionMetrics(c *client.ACClient, dev core.Device) ([]core.Metric, error) {
 	sessionNum := 0.0
+	currentOnlineUsers := -1.0
 	maxOnlineUsers := -1.0
 	maxSessions := -1.0
 
@@ -26,6 +27,11 @@ func CollectSessionMetrics(c *client.ACClient, dev core.Device) ([]core.Metric, 
 	err := c.DoJSON(context.Background(), "/v1/status/session-num", &resp)
 	if err == nil && resp.Code == 0 {
 		sessionNum = float64(resp.Data)
+	}
+
+	err = c.DoJSON(context.Background(), "/v1/status/online-user", &resp)
+	if err == nil && resp.Code == 0 {
+		currentOnlineUsers = float64(resp.Data)
 	}
 
 	if strings.TrimSpace(dev.SNMPCommunity) != "" {
@@ -77,6 +83,13 @@ func CollectSessionMetrics(c *client.ACClient, dev core.Device) ([]core.Metric, 
 		},
 	}
 
+	if currentOnlineUsers >= 0 {
+		metrics = append(metrics, core.Metric{
+			Name:   "netsec_online_users_current",
+			Value:  currentOnlineUsers,
+			Labels: nil,
+		})
+	}
 	if maxOnlineUsers >= 0 {
 		metrics = append(metrics, core.Metric{
 			Name:   "netsec_online_users_max_limit",

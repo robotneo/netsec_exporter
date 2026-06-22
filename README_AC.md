@@ -66,6 +66,7 @@ auths:
 ### 会话
 
 - `netsec_session_active_current`：当前会话数（API：`GET /v1/status/session-num`）
+- `netsec_online_users_current`：当前在线用户数（API：`GET /v1/status/online-user`）
 - `netsec_online_users_max_limit`：最大在线用户上限（SNMP：`.1.3.6.1.4.1.35047.2.1.1.2.0`；需配置 `snmp_community`）
 - `netsec_session_max_limit`：最大会话上限（SNMP：`.1.3.6.1.4.1.35047.2.1.1.5.0`；需配置 `snmp_community`）
 

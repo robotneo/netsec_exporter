@@ -45,6 +45,22 @@ var (
 		[]string{"device_name", "instance", "vendor", "role"},
 	)
 
+	onlineUsersCurrent = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_online_users_current",
+			Help: "Network security device online users (current)",
+		},
+		[]string{"device_name", "instance", "vendor", "role"},
+	)
+
+	onlineUsersMaxLimit = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netsec_online_users_max_limit",
+			Help: "Network security device maximum online users limit",
+		},
+		[]string{"device_name", "instance", "vendor", "role"},
+	)
+
 	newSessionsPerSecond = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: "netsec_sessions_new_per_second",
@@ -224,6 +240,8 @@ func InitMetrics() {
 	prometheus.MustRegister(memoryUsagePercent)
 	prometheus.MustRegister(diskUsagePercent)
 	prometheus.MustRegister(activeSessionsCurrent)
+	prometheus.MustRegister(onlineUsersCurrent)
+	prometheus.MustRegister(onlineUsersMaxLimit)
 	prometheus.MustRegister(newSessionsPerSecond)
 	prometheus.MustRegister(sessionMaxLimit)
 	prometheus.MustRegister(interfaceSendBits)
@@ -261,6 +279,10 @@ func SetMetric(m Metric) {
 		diskUsagePercent.With(m.Labels).Set(m.Value)
 	case "netsec_session_active_current":
 		activeSessionsCurrent.With(m.Labels).Set(m.Value)
+	case "netsec_online_users_current":
+		onlineUsersCurrent.With(m.Labels).Set(m.Value)
+	case "netsec_online_users_max_limit":
+		onlineUsersMaxLimit.With(m.Labels).Set(m.Value)
 	case "netsec_sessions_new_per_second":
 		newSessionsPerSecond.With(m.Labels).Set(m.Value)
 	case "netsec_session_max_limit":
