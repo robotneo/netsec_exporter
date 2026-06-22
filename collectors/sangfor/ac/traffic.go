@@ -11,8 +11,7 @@ import (
 	"netsec_exporter/core"
 )
 
-// CollectTrafficMetrics 用于承载 AC 的流量与带宽相关指标。
-// 典型包括总上下行流量、带宽、应用流量等。
+// CollectTrafficMetrics 采集 AC 的总上下行吞吐指标。
 func CollectTrafficMetrics(c *client.ACClient, dev core.Device) ([]core.Metric, error) {
 	labels := map[string]string{
 		"name": "WAN",
@@ -34,20 +33,9 @@ func CollectTrafficMetrics(c *client.ACClient, dev core.Device) ([]core.Metric, 
 	outBits := pickRateBitsPerSecond(resp.Data, []string{"up", "uplink", "upstream", "send", "tx", "out"})
 	inBits := pickRateBitsPerSecond(resp.Data, []string{"down", "downlink", "downstream", "recv", "rx", "in"})
 
-	bandwidthUsage := 0.0
-	var bwResp struct {
-		Code    int    `json:"code"`
-		Message string `json:"message"`
-		Data    int64  `json:"data"`
-	}
-	if err := c.DoJSON(context.Background(), "/v1/status/bandwidth-usage", &bwResp); err == nil && bwResp.Code == 0 {
-		bandwidthUsage = float64(bwResp.Data)
-	}
-
 	return []core.Metric{
 		{Name: "netsec_interface_send_bits", Value: outBits, Labels: labels},
 		{Name: "netsec_interface_recv_bits", Value: inBits, Labels: labels},
-		{Name: "netsec_bandwidth_usage_percent", Value: bandwidthUsage, Labels: labels},
 	}, nil
 }
 

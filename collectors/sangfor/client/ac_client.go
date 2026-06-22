@@ -21,6 +21,7 @@ type ACClient struct {
 	SharedKey  string
 
 	mu           sync.Mutex
+	cachedKey    string
 	cachedRandom string
 	cachedMD5    string
 	cachedUntil  time.Time
@@ -105,12 +106,12 @@ func (c *ACClient) DoJSONPost(ctx context.Context, path string, reqBody any, out
 
 	bodyMap := map[string]any{}
 	if reqBody != nil {
-		b, err := json.Marshal(reqBody)
-		if err != nil {
-			return err
+		reqBodyBytes, marshalErr := json.Marshal(reqBody)
+		if marshalErr != nil {
+			return marshalErr
 		}
-		if err := json.Unmarshal(b, &bodyMap); err != nil {
-			return err
+		if unmarshalErr := json.Unmarshal(reqBodyBytes, &bodyMap); unmarshalErr != nil {
+			return unmarshalErr
 		}
 	}
 	bodyMap["random"] = random
@@ -145,17 +146,28 @@ func (c *ACClient) nextSignedParams() (string, string, error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
+	sharedKey := strings.TrimSpace(c.SharedKey)
+	if sharedKey == "" {
+		return "", "", fmt.Errorf("missing shared_key")
+	}
+
 	now := time.Now()
+	if c.cachedKey != sharedKey {
+		c.cachedKey = sharedKey
+		c.cachedRandom = ""
+		c.cachedMD5 = ""
+		c.cachedUntil = time.Time{}
+	}
 	if c.cachedRandom != "" && c.cachedMD5 != "" && now.Before(c.cachedUntil) {
 		return c.cachedRandom, c.cachedMD5, nil
 	}
 
-	random, err := newNumericRandom(16)
+	random, err := newNumericRandom(8)
 	if err != nil {
 		return "", "", err
 	}
 
-	sum := md5.Sum([]byte(c.SharedKey + random))
+	sum := md5.Sum([]byte(sharedKey + random))
 	md5hex := fmt.Sprintf("%x", sum[:])
 
 	c.cachedRandom = random

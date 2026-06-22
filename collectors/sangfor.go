@@ -374,6 +374,14 @@ func (c *Sangfor) collectAC(dev core.Device) ([]core.Metric, error) {
 		}
 	}
 
+	bandwidthMetrics, err := sangforac.CollectBandwidthMetrics(ac, dev)
+	if err != nil {
+		bandwidthMetrics, err = sangforac.CollectBandwidthMetrics(ac, dev)
+		if err != nil {
+			bandwidthMetrics = nil
+		}
+	}
+
 	interfaceMetrics, err := sangforac.CollectInterfaceMetrics(ac, dev)
 	if err != nil {
 		interfaceMetrics, err = sangforac.CollectInterfaceMetrics(ac, dev)
@@ -385,6 +393,7 @@ func (c *Sangfor) collectAC(dev core.Device) ([]core.Metric, error) {
 	metrics := append([]core.Metric{}, systemMetrics...)
 	metrics = append(metrics, sessionMetrics...)
 	metrics = append(metrics, trafficMetrics...)
+	metrics = append(metrics, bandwidthMetrics...)
 	metrics = append(metrics, interfaceMetrics...)
 	return metrics, nil
 }

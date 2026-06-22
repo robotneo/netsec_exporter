@@ -14,7 +14,6 @@ func CollectSystemMetrics(c *client.ACClient, dev core.Device) ([]core.Metric, e
 		CollectCPUMetrics,
 		CollectMemoryMetrics,
 		CollectDiskMetrics,
-		CollectUptimeMetrics,
 	} {
 		ms, err := collect(c, dev)
 		if err != nil {

@@ -3,24 +3,11 @@ package ac
 import (
 	"encoding/json"
 	"fmt"
-	"regexp"
 	"strconv"
 	"strings"
 
-	"netsec_exporter/core"
-
 	"github.com/gosnmp/gosnmp"
 )
-
-var uptimePartPattern = regexp.MustCompile(`(?i)(\d+)\s*(weeks?|days?|hours?|minutes?|mins?|seconds?|secs?|天|小时|分钟|分|秒)`)
-
-func appendMetricGroups(groups ...[]core.Metric) []core.Metric {
-	var out []core.Metric
-	for _, group := range groups {
-		out = append(out, group...)
-	}
-	return out
-}
 
 func snmpTargetHost(host string) string {
 	h := strings.TrimSpace(host)
@@ -125,66 +112,4 @@ func parseACDataString(v any) string {
 	default:
 		return strings.TrimSpace(fmt.Sprintf("%v", v))
 	}
-}
-
-func parseUptimeToSeconds(raw string) (float64, error) {
-	text := strings.TrimSpace(raw)
-	if text == "" {
-		return 0, fmt.Errorf("uptime is empty")
-	}
-
-	matches := uptimePartPattern.FindAllStringSubmatch(text, -1)
-	if len(matches) == 0 {
-		if v, err := strconv.ParseFloat(text, 64); err == nil {
-			return v, nil
-		}
-		return 0, fmt.Errorf("unsupported uptime format: %s", text)
-	}
-
-	var total float64
-	for _, m := range matches {
-		if len(m) != 3 {
-			continue
-		}
-
-		n, err := strconv.Atoi(m[1])
-		if err != nil {
-			return 0, fmt.Errorf("invalid uptime number: %w", err)
-		}
-
-		unit := strings.ToLower(m[2])
-		switch unit {
-		case "week", "weeks":
-			total += float64(n * 7 * 24 * 3600)
-		case "day", "days":
-			total += float64(n * 24 * 3600)
-		case "hour", "hours":
-			total += float64(n * 3600)
-		case "minute", "minutes", "min", "mins":
-			total += float64(n * 60)
-		case "second", "seconds", "sec", "secs":
-			total += float64(n)
-		case "天":
-			total += float64(n * 24 * 3600)
-		case "小时":
-			total += float64(n * 3600)
-		case "分钟", "分":
-			total += float64(n * 60)
-		case "秒":
-			total += float64(n)
-		default:
-			return 0, fmt.Errorf("unsupported uptime unit: %s", m[2])
-		}
-	}
-
-	condensed := strings.NewReplacer(" ", "", ",", "", "，", "").Replace(text)
-	var reconstructed strings.Builder
-	for _, m := range matches {
-		reconstructed.WriteString(strings.NewReplacer(" ", "", ",", "", "，", "").Replace(strings.TrimSpace(m[0])))
-	}
-	if reconstructed.String() != condensed {
-		return 0, fmt.Errorf("unsupported uptime format: %s", text)
-	}
-
-	return total, nil
 }
