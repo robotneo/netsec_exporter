@@ -7,11 +7,11 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"fmt"
+	"io"
 	"math/big"
 	"net/http"
 	"net/url"
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -19,12 +19,6 @@ type ACClient struct {
 	BaseURL    string
 	HTTPClient *http.Client
 	SharedKey  string
-
-	mu           sync.Mutex
-	cachedKey    string
-	cachedRandom string
-	cachedMD5    string
-	cachedUntil  time.Time
 }
 
 func NewACClient(host string, port uint16, timeout time.Duration, insecureSkipVerify bool, sharedKey string) *ACClient {
@@ -80,7 +74,7 @@ func (c *ACClient) DoJSON(ctx context.Context, path string, out any) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("ac api status=%d", resp.StatusCode)
+		return acHTTPError(resp)
 	}
 
 	return json.NewDecoder(resp.Body).Decode(out)
@@ -136,30 +130,16 @@ func (c *ACClient) DoJSONPost(ctx context.Context, path string, reqBody any, out
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("ac api status=%d", resp.StatusCode)
+		return acHTTPError(resp)
 	}
 
 	return json.NewDecoder(resp.Body).Decode(out)
 }
 
 func (c *ACClient) nextSignedParams() (string, string, error) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-
 	sharedKey := strings.TrimSpace(c.SharedKey)
 	if sharedKey == "" {
 		return "", "", fmt.Errorf("missing shared_key")
-	}
-
-	now := time.Now()
-	if c.cachedKey != sharedKey {
-		c.cachedKey = sharedKey
-		c.cachedRandom = ""
-		c.cachedMD5 = ""
-		c.cachedUntil = time.Time{}
-	}
-	if c.cachedRandom != "" && c.cachedMD5 != "" && now.Before(c.cachedUntil) {
-		return c.cachedRandom, c.cachedMD5, nil
 	}
 
 	random, err := newNumericRandom(8)
@@ -170,11 +150,20 @@ func (c *ACClient) nextSignedParams() (string, string, error) {
 	sum := md5.Sum([]byte(sharedKey + random))
 	md5hex := fmt.Sprintf("%x", sum[:])
 
-	c.cachedRandom = random
-	c.cachedMD5 = md5hex
-	c.cachedUntil = now.Add(time.Hour)
-
 	return random, md5hex, nil
+}
+
+func acHTTPError(resp *http.Response) error {
+	body, err := io.ReadAll(io.LimitReader(resp.Body, 4096))
+	if err != nil {
+		return fmt.Errorf("ac api %s %s status=%d read_body_failed=%v", resp.Request.Method, resp.Request.URL.String(), resp.StatusCode, err)
+	}
+
+	text := strings.TrimSpace(string(body))
+	if text == "" {
+		return fmt.Errorf("ac api %s %s status=%d", resp.Request.Method, resp.Request.URL.String(), resp.StatusCode)
+	}
+	return fmt.Errorf("ac api %s %s status=%d body=%s", resp.Request.Method, resp.Request.URL.String(), resp.StatusCode, text)
 }
 
 func newNumericRandom(digits int) (string, error) {

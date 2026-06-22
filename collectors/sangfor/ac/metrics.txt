@@ -1,0 +1,45 @@
+# HELP netsec_device_up Network security device status
+# TYPE netsec_device_up gauge
+netsec_device_up{device_name="sangfor-ac",instance="192.168.254.4",role="ac",vendor="sangfor"} 1
+# HELP netsec_interface_link_state Network security device interface link state (1=true, 0=false)
+# TYPE netsec_interface_link_state gauge
+netsec_interface_link_state{description="",device_name="sangfor-ac",if_name="eth0",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-ac",if_name="eth1",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 1
+netsec_interface_link_state{description="",device_name="sangfor-ac",if_name="eth2",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-ac",if_name="eth3",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 1
+netsec_interface_link_state{description="",device_name="sangfor-ac",if_name="eth4",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-ac",if_name="eth5",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-ac",if_name="eth6",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+netsec_interface_link_state{description="",device_name="sangfor-ac",if_name="eth7",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+# HELP netsec_interface_traffic_in_bytes_total Network security device interface traffic in bytes total
+# TYPE netsec_interface_traffic_in_bytes_total gauge
+netsec_interface_traffic_in_bytes_total{description="",device_name="sangfor-ac",if_name="eth0",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bytes_total{description="",device_name="sangfor-ac",if_name="eth1",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 977915
+netsec_interface_traffic_in_bytes_total{description="",device_name="sangfor-ac",if_name="eth2",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bytes_total{description="",device_name="sangfor-ac",if_name="eth3",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 4.589867e+06
+netsec_interface_traffic_in_bytes_total{description="",device_name="sangfor-ac",if_name="eth4",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bytes_total{description="",device_name="sangfor-ac",if_name="eth5",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bytes_total{description="",device_name="sangfor-ac",if_name="eth6",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_in_bytes_total{description="",device_name="sangfor-ac",if_name="eth7",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+# HELP netsec_interface_traffic_out_bytes_total Network security device interface traffic out bytes total
+# TYPE netsec_interface_traffic_out_bytes_total gauge
+netsec_interface_traffic_out_bytes_total{description="",device_name="sangfor-ac",if_name="eth0",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bytes_total{description="",device_name="sangfor-ac",if_name="eth1",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 4.641221e+06
+netsec_interface_traffic_out_bytes_total{description="",device_name="sangfor-ac",if_name="eth2",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bytes_total{description="",device_name="sangfor-ac",if_name="eth3",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 973796
+netsec_interface_traffic_out_bytes_total{description="",device_name="sangfor-ac",if_name="eth4",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bytes_total{description="",device_name="sangfor-ac",if_name="eth5",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bytes_total{description="",device_name="sangfor-ac",if_name="eth6",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+netsec_interface_traffic_out_bytes_total{description="",device_name="sangfor-ac",if_name="eth7",instance="192.168.254.4",ip_addr="",mac="",role="ac",vendor="sangfor",zone=""} 0
+# HELP netsec_online_users_max_limit Network security device maximum online users limit
+# TYPE netsec_online_users_max_limit gauge
+netsec_online_users_max_limit{device_name="sangfor-ac",instance="192.168.254.4",role="ac",vendor="sangfor"} 300000
+# HELP netsec_scrape_duration_seconds Network security device scrape duration
+# TYPE netsec_scrape_duration_seconds gauge
+netsec_scrape_duration_seconds{device_name="sangfor-ac",instance="192.168.254.4",role="ac",vendor="sangfor"} 3.667016035
+# HELP netsec_session_active_current Network security device active sessions (current)
+# TYPE netsec_session_active_current gauge
+netsec_session_active_current{device_name="sangfor-ac",instance="192.168.254.4",role="ac",vendor="sangfor"} 0
+# HELP netsec_session_max_limit Network security device maximum session limit
+# TYPE netsec_session_max_limit gauge
+netsec_session_max_limit{device_name="sangfor-ac",instance="192.168.254.4",role="ac",vendor="sangfor"} 880000

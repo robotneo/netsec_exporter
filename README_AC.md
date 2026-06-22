@@ -46,11 +46,11 @@ auths:
 
 ## 鉴权方式说明
 
-- `random`：8 位纯数字随机串，Exporter 会缓存并在 1 小时内复用同一个 `random`
+- `random`：8 位纯数字随机串，Exporter 每次请求都会重新生成
 - `md5`：`MD5(shared_key + random)`（小写 hex）
 - GET 接口：`random`/`md5` 作为 query 参数追加
 - POST 接口：`random`/`md5` 注入 JSON body
-- 若 `shared_key` 发生变化，会立即丢弃旧签名缓存并重新生成，避免复用错误的 `md5`
+- 这样可以避免设备将重复 `random` 视为鉴权失败
 
 ## 指标列表
 
