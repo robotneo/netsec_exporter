@@ -11,6 +11,51 @@ import (
 	"github.com/gosnmp/gosnmp"
 )
 
+func snmpTargetHost(host string) string {
+	h := strings.TrimSpace(host)
+	if strings.Count(h, ":") == 1 {
+		parts := strings.Split(h, ":")
+		h = parts[0]
+	}
+	return h
+}
+
+func snmpPDUToFloat64(pdu gosnmp.SnmpPDU) (float64, bool) {
+	switch v := pdu.Value.(type) {
+	case int:
+		return float64(v), true
+	case int8:
+		return float64(v), true
+	case int16:
+		return float64(v), true
+	case int32:
+		return float64(v), true
+	case int64:
+		return float64(v), true
+	case uint:
+		return float64(v), true
+	case uint8:
+		return float64(v), true
+	case uint16:
+		return float64(v), true
+	case uint32:
+		return float64(v), true
+	case uint64:
+		return float64(v), true
+	case float32:
+		return float64(v), true
+	case float64:
+		return v, true
+	default:
+		bi := gosnmp.ToBigInt(pdu.Value)
+		if bi == nil {
+			return 0, false
+		}
+		f, _ := bi.Float64()
+		return f, true
+	}
+}
+
 // CollectInterfaceMetrics 用于承载 AC 的接口相关指标。
 // 典型包括接口状态、接口流量、协商速率、接口配置等。
 func CollectInterfaceMetrics(c *client.ACClient, dev core.Device) ([]core.Metric, error) {

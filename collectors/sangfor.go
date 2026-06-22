@@ -35,6 +35,10 @@ type hciBundle struct {
 	sm     *sangforclient.HCISessionManager
 }
 
+type metricCollector func() ([]core.Metric, error)
+type firewallMetricCollector func(sangforclient.Session) ([]core.Metric, error)
+type hciMetricCollector func(sangforclient.HCISession) ([]core.Metric, error)
+
 func (c *Sangfor) Name() string {
 	return "sangfor"
 }
@@ -60,35 +64,93 @@ func (c *Sangfor) Collect(dev core.Device) ([]core.Metric, error) {
 	}
 }
 
-func (c *Sangfor) collectAD(dev core.Device) ([]core.Metric, error) {
-	systemMetrics, err := sangforad.CollectSystemMetrics(dev)
-	if err != nil {
-		systemMetrics, err = sangforad.CollectSystemMetrics(dev)
-		if err != nil {
-			return nil, err
-		}
+func collectWithRetry(collect metricCollector) ([]core.Metric, error) {
+	metrics, err := collect()
+	if err == nil {
+		return metrics, nil
 	}
 
-	sessionMetrics, err := sangforad.CollectSessionMetrics(dev)
+	metrics, err = collect()
 	if err != nil {
-		sessionMetrics, err = sangforad.CollectSessionMetrics(dev)
-		if err != nil {
-			sessionMetrics = nil
-		}
+		return nil, err
 	}
-
-	interfaceMetrics, err := sangforad.CollectInterfaceMetrics(dev)
-	if err != nil {
-		interfaceMetrics, err = sangforad.CollectInterfaceMetrics(dev)
-		if err != nil {
-			interfaceMetrics = nil
-		}
-	}
-
-	metrics := append([]core.Metric{}, systemMetrics...)
-	metrics = append(metrics, sessionMetrics...)
-	metrics = append(metrics, interfaceMetrics...)
 	return metrics, nil
+}
+
+func mergeMetricGroups(groups ...[]core.Metric) []core.Metric {
+	total := 0
+	for _, group := range groups {
+		total += len(group)
+	}
+
+	metrics := make([]core.Metric, 0, total)
+	for _, group := range groups {
+		metrics = append(metrics, group...)
+	}
+	return metrics
+}
+
+func (c *Sangfor) collectFirewallWithRelogin(dev core.Device, sess *sangforclient.Session, collect firewallMetricCollector) ([]core.Metric, error) {
+	metrics, err := collect(*sess)
+	if err == nil {
+		return metrics, nil
+	}
+
+	c.sm.Invalidate(dev.Host)
+
+	refreshed, err := c.sm.GetOrLogin(dev)
+	if err != nil {
+		return nil, err
+	}
+
+	*sess = refreshed
+	return collect(*sess)
+}
+
+func (c *Sangfor) getHCISession(b hciBundle, dev core.Device) (sangforclient.HCISession, error) {
+	if dev.Token != "" {
+		return sangforhci.TokenSession(dev.Token), nil
+	}
+	if dev.Username == "" || dev.Password == "" {
+		return sangforclient.HCISession{}, fmt.Errorf("missing username/password for HCI")
+	}
+	return b.sm.GetOrLogin(context.Background(), dev.Username, dev.Password)
+}
+
+func (c *Sangfor) collectHCIWithRetry(b hciBundle, dev core.Device, sess *sangforclient.HCISession, collect hciMetricCollector) ([]core.Metric, error) {
+	metrics, err := collect(*sess)
+	if err == nil || dev.Token != "" {
+		return metrics, err
+	}
+
+	b.sm.Invalidate()
+
+	refreshed, err := b.sm.GetOrLogin(context.Background(), dev.Username, dev.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	*sess = refreshed
+	return collect(*sess)
+}
+
+func (c *Sangfor) collectAD(dev core.Device) ([]core.Metric, error) {
+	systemMetrics, err := collectWithRetry(func() ([]core.Metric, error) {
+		return sangforad.CollectSystemMetrics(dev)
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	sessionMetrics, _ := collectWithRetry(func() ([]core.Metric, error) {
+		return sangforad.CollectSessionMetrics(dev)
+	})
+
+	interfaceMetrics, _ := collectWithRetry(func() ([]core.Metric, error) {
+		return sangforad.CollectInterfaceMetrics(dev)
+	})
+
+	return mergeMetricGroups(systemMetrics, sessionMetrics, interfaceMetrics), nil
 }
 
 func (c *Sangfor) init() {
@@ -161,186 +223,112 @@ func (c *Sangfor) collectFirewallV1(dev core.Device) ([]core.Metric, error) {
 		return nil, err
 	}
 
-	cpuMetrics, err := sangforfw.CollectCPUCurrentPercent(c.client, sess, dev)
+	cpuMetrics, err := c.collectFirewallWithRelogin(dev, &sess, func(sess sangforclient.Session) ([]core.Metric, error) {
+		return sangforfw.CollectCPUCurrentPercent(c.client, sess, dev)
+	})
 	if err != nil {
-		c.sm.Invalidate(dev.Host)
-		sess, err = c.sm.GetOrLogin(dev)
-		if err != nil {
-			return nil, err
-		}
-		cpuMetrics, err = sangforfw.CollectCPUCurrentPercent(c.client, sess, dev)
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
-	memMetrics, err := sangforfw.CollectMemoryUsagePercent(c.client, sess, dev)
+	memMetrics, err := c.collectFirewallWithRelogin(dev, &sess, func(sess sangforclient.Session) ([]core.Metric, error) {
+		return sangforfw.CollectMemoryUsagePercent(c.client, sess, dev)
+	})
 	if err != nil {
-		c.sm.Invalidate(dev.Host)
-		sess, err = c.sm.GetOrLogin(dev)
-		if err != nil {
-			return nil, err
-		}
-		memMetrics, err = sangforfw.CollectMemoryUsagePercent(c.client, sess, dev)
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
-	diskMetrics, err := sangforfw.CollectDiskUsagePercent(c.client, sess, dev)
+	diskMetrics, err := c.collectFirewallWithRelogin(dev, &sess, func(sess sangforclient.Session) ([]core.Metric, error) {
+		return sangforfw.CollectDiskUsagePercent(c.client, sess, dev)
+	})
 	if err != nil {
-		c.sm.Invalidate(dev.Host)
-		sess, err = c.sm.GetOrLogin(dev)
-		if err != nil {
-			return nil, err
-		}
-		diskMetrics, err = sangforfw.CollectDiskUsagePercent(c.client, sess, dev)
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
-	concurrentMetrics, err := sangforfw.CollectConcurrentSessions(c.client, sess, dev)
+	concurrentMetrics, err := c.collectFirewallWithRelogin(dev, &sess, func(sess sangforclient.Session) ([]core.Metric, error) {
+		return sangforfw.CollectConcurrentSessions(c.client, sess, dev)
+	})
 	if err != nil {
-		c.sm.Invalidate(dev.Host)
-		sess, err = c.sm.GetOrLogin(dev)
-		if err != nil {
-			return nil, err
-		}
-		concurrentMetrics, err = sangforfw.CollectConcurrentSessions(c.client, sess, dev)
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
-	newSessionMetrics, err := sangforfw.CollectNewSessions(c.client, sess, dev)
+	newSessionMetrics, err := c.collectFirewallWithRelogin(dev, &sess, func(sess sangforclient.Session) ([]core.Metric, error) {
+		return sangforfw.CollectNewSessions(c.client, sess, dev)
+	})
 	if err != nil {
-		c.sm.Invalidate(dev.Host)
-		sess, err = c.sm.GetOrLogin(dev)
-		if err != nil {
-			return nil, err
-		}
-		newSessionMetrics, err = sangforfw.CollectNewSessions(c.client, sess, dev)
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
-	trafficMetrics, err := sangforfw.CollectInterfaceTrafficBits(c.client, sess, dev)
+	trafficMetrics, err := c.collectFirewallWithRelogin(dev, &sess, func(sess sangforclient.Session) ([]core.Metric, error) {
+		return sangforfw.CollectInterfaceTrafficBits(c.client, sess, dev)
+	})
 	if err != nil {
-		c.sm.Invalidate(dev.Host)
-		sess, err = c.sm.GetOrLogin(dev)
-		if err != nil {
-			return nil, err
-		}
-		trafficMetrics, err = sangforfw.CollectInterfaceTrafficBits(c.client, sess, dev)
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
-	interfaceMetrics, err := sangforfw.CollectInterfaces(c.client, sess, dev)
+	interfaceMetrics, err := c.collectFirewallWithRelogin(dev, &sess, func(sess sangforclient.Session) ([]core.Metric, error) {
+		return sangforfw.CollectInterfaces(c.client, sess, dev)
+	})
 	if err != nil {
-		c.sm.Invalidate(dev.Host)
-		sess, err = c.sm.GetOrLogin(dev)
-		if err != nil {
-			return nil, err
-		}
-		interfaceMetrics, err = sangforfw.CollectInterfaces(c.client, sess, dev)
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
-	haMetrics, err := sangforfw.CollectHAStatus(c.client, sess, dev)
+	haMetrics, err := c.collectFirewallWithRelogin(dev, &sess, func(sess sangforclient.Session) ([]core.Metric, error) {
+		return sangforfw.CollectHAStatus(c.client, sess, dev)
+	})
 	if err != nil {
-		c.sm.Invalidate(dev.Host)
-		sess, err = c.sm.GetOrLogin(dev)
-		if err != nil {
-			return nil, err
-		}
-		haMetrics, err = sangforfw.CollectHAStatus(c.client, sess, dev)
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
-	systemVersionMetrics, err := sangforfw.CollectVersionInfo(c.client, sess, dev)
+	systemVersionMetrics, err := c.collectFirewallWithRelogin(dev, &sess, func(sess sangforclient.Session) ([]core.Metric, error) {
+		return sangforfw.CollectVersionInfo(c.client, sess, dev)
+	})
 	if err != nil {
-		c.sm.Invalidate(dev.Host)
-		sess, err = c.sm.GetOrLogin(dev)
-		if err != nil {
-			systemVersionMetrics = sangforfw.VersionUnavailableMetric(dev)
-		} else {
-			systemVersionMetrics, err = sangforfw.CollectVersionInfo(c.client, sess, dev)
-			if err != nil {
-				systemVersionMetrics = sangforfw.VersionUnavailableMetric(dev)
-			}
-		}
+		systemVersionMetrics = sangforfw.VersionUnavailableMetric(dev)
 	}
 
-	uptimeMetrics, err := sangforfw.CollectUptimeSeconds(c.client, sess, dev)
+	uptimeMetrics, err := c.collectFirewallWithRelogin(dev, &sess, func(sess sangforclient.Session) ([]core.Metric, error) {
+		return sangforfw.CollectUptimeSeconds(c.client, sess, dev)
+	})
 	if err != nil {
-		c.sm.Invalidate(dev.Host)
-		sess, err = c.sm.GetOrLogin(dev)
-		if err == nil {
-			uptimeMetrics, err = sangforfw.CollectUptimeSeconds(c.client, sess, dev)
-		}
-		if err != nil {
-			uptimeMetrics = nil
-		}
+		uptimeMetrics = nil
 	}
 
-	fanMetrics, err := sangforfw.CollectFanStatus(c.client, sess, dev)
+	fanMetrics, err := c.collectFirewallWithRelogin(dev, &sess, func(sess sangforclient.Session) ([]core.Metric, error) {
+		return sangforfw.CollectFanStatus(c.client, sess, dev)
+	})
 	if err != nil {
-		c.sm.Invalidate(dev.Host)
-		sess, err = c.sm.GetOrLogin(dev)
-		if err == nil {
-			fanMetrics, err = sangforfw.CollectFanStatus(c.client, sess, dev)
-		}
-		if err != nil {
-			fanMetrics = nil
-		}
+		fanMetrics = nil
 	}
 
-	powerMetrics, err := sangforfw.CollectPowerStatus(c.client, sess, dev)
+	powerMetrics, err := c.collectFirewallWithRelogin(dev, &sess, func(sess sangforclient.Session) ([]core.Metric, error) {
+		return sangforfw.CollectPowerStatus(c.client, sess, dev)
+	})
 	if err != nil {
-		c.sm.Invalidate(dev.Host)
-		sess, err = c.sm.GetOrLogin(dev)
-		if err == nil {
-			powerMetrics, err = sangforfw.CollectPowerStatus(c.client, sess, dev)
-		}
-		if err != nil {
-			powerMetrics = nil
-		}
+		powerMetrics = nil
 	}
 
-	temperatureMetrics, err := sangforfw.CollectTemperatureMetrics(c.client, sess, dev)
+	temperatureMetrics, err := c.collectFirewallWithRelogin(dev, &sess, func(sess sangforclient.Session) ([]core.Metric, error) {
+		return sangforfw.CollectTemperatureMetrics(c.client, sess, dev)
+	})
 	if err != nil {
-		c.sm.Invalidate(dev.Host)
-		sess, err = c.sm.GetOrLogin(dev)
-		if err == nil {
-			temperatureMetrics, err = sangforfw.CollectTemperatureMetrics(c.client, sess, dev)
-		}
-		if err != nil {
-			temperatureMetrics = nil
-		}
+		temperatureMetrics = nil
 	}
 
-	metrics := append([]core.Metric{}, cpuMetrics...)
-	metrics = append(metrics, memMetrics...)
-	metrics = append(metrics, diskMetrics...)
-	metrics = append(metrics, concurrentMetrics...)
-	metrics = append(metrics, newSessionMetrics...)
-	metrics = append(metrics, trafficMetrics...)
-	metrics = append(metrics, interfaceMetrics...)
-	metrics = append(metrics, haMetrics...)
-	metrics = append(metrics, systemVersionMetrics...)
-	metrics = append(metrics, uptimeMetrics...)
-	metrics = append(metrics, fanMetrics...)
-	metrics = append(metrics, powerMetrics...)
-	metrics = append(metrics, temperatureMetrics...)
-	return metrics, nil
+	return mergeMetricGroups(
+		cpuMetrics,
+		memMetrics,
+		diskMetrics,
+		concurrentMetrics,
+		newSessionMetrics,
+		trafficMetrics,
+		interfaceMetrics,
+		haMetrics,
+		systemVersionMetrics,
+		uptimeMetrics,
+		fanMetrics,
+		powerMetrics,
+		temperatureMetrics,
+	), nil
 }
 
 func (c *Sangfor) collectAC(dev core.Device) ([]core.Metric, error) {
@@ -350,155 +338,71 @@ func (c *Sangfor) collectAC(dev core.Device) ([]core.Metric, error) {
 
 	ac := c.getACClient(dev)
 
-	systemMetrics, err := sangforac.CollectSystemMetrics(ac, dev)
-	if err != nil {
-		systemMetrics, err = sangforac.CollectSystemMetrics(ac, dev)
-		if err != nil {
-			systemMetrics = nil
-		}
-	}
+	systemMetrics, _ := collectWithRetry(func() ([]core.Metric, error) {
+		return sangforac.CollectSystemMetrics(ac, dev)
+	})
 
-	sessionMetrics, err := sangforac.CollectSessionMetrics(ac, dev)
-	if err != nil {
-		sessionMetrics, err = sangforac.CollectSessionMetrics(ac, dev)
-		if err != nil {
-			sessionMetrics = nil
-		}
-	}
+	sessionMetrics, _ := collectWithRetry(func() ([]core.Metric, error) {
+		return sangforac.CollectSessionMetrics(ac, dev)
+	})
 
-	trafficMetrics, err := sangforac.CollectTrafficMetrics(ac, dev)
-	if err != nil {
-		trafficMetrics, err = sangforac.CollectTrafficMetrics(ac, dev)
-		if err != nil {
-			trafficMetrics = nil
-		}
-	}
+	trafficMetrics, _ := collectWithRetry(func() ([]core.Metric, error) {
+		return sangforac.CollectTrafficMetrics(ac, dev)
+	})
 
-	bandwidthMetrics, err := sangforac.CollectBandwidthMetrics(ac, dev)
-	if err != nil {
-		bandwidthMetrics, err = sangforac.CollectBandwidthMetrics(ac, dev)
-		if err != nil {
-			bandwidthMetrics = nil
-		}
-	}
+	bandwidthMetrics, _ := collectWithRetry(func() ([]core.Metric, error) {
+		return sangforac.CollectBandwidthMetrics(ac, dev)
+	})
 
-	interfaceMetrics, err := sangforac.CollectInterfaceMetrics(ac, dev)
-	if err != nil {
-		interfaceMetrics, err = sangforac.CollectInterfaceMetrics(ac, dev)
-		if err != nil {
-			interfaceMetrics = nil
-		}
-	}
+	interfaceMetrics, _ := collectWithRetry(func() ([]core.Metric, error) {
+		return sangforac.CollectInterfaceMetrics(ac, dev)
+	})
 
-	metrics := append([]core.Metric{}, systemMetrics...)
-	metrics = append(metrics, sessionMetrics...)
-	metrics = append(metrics, trafficMetrics...)
-	metrics = append(metrics, bandwidthMetrics...)
-	metrics = append(metrics, interfaceMetrics...)
-	return metrics, nil
+	return mergeMetricGroups(systemMetrics, sessionMetrics, trafficMetrics, bandwidthMetrics, interfaceMetrics), nil
 }
 
 func (c *Sangfor) collectHCI(dev core.Device) ([]core.Metric, error) {
 	b := c.getHCIBundle(dev.Host)
 
-	var sess sangforclient.HCISession
-	if dev.Token != "" {
-		sess = sangforhci.TokenSession(dev.Token)
-	} else {
-		if dev.Username == "" || dev.Password == "" {
-			return nil, fmt.Errorf("missing username/password for HCI")
-		}
-		s, err := b.sm.GetOrLogin(context.Background(), dev.Username, dev.Password)
-		if err != nil {
-			return nil, err
-		}
-		sess = s
-	}
-
-	overviewMetrics, err := sangforhci.CollectOverviewMetrics(b.client, sess, dev)
+	sess, err := c.getHCISession(b, dev)
 	if err != nil {
-		if dev.Token == "" {
-			b.sm.Invalidate()
-			s, e := b.sm.GetOrLogin(context.Background(), dev.Username, dev.Password)
-			if e != nil {
-				return nil, e
-			}
-			sess = s
-			overviewMetrics, err = sangforhci.CollectOverviewMetrics(b.client, sess, dev)
-		}
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
-	azHostMetrics, err := sangforhci.CollectAZAndHostMetrics(b.client, sess, dev)
+	overviewMetrics, err := c.collectHCIWithRetry(b, dev, &sess, func(sess sangforclient.HCISession) ([]core.Metric, error) {
+		return sangforhci.CollectOverviewMetrics(b.client, sess, dev)
+	})
 	if err != nil {
-		if dev.Token == "" {
-			b.sm.Invalidate()
-			s, e := b.sm.GetOrLogin(context.Background(), dev.Username, dev.Password)
-			if e != nil {
-				return nil, e
-			}
-			sess = s
-			azHostMetrics, err = sangforhci.CollectAZAndHostMetrics(b.client, sess, dev)
-		}
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
-	vmMetrics, err := sangforhci.CollectVMMetrics(b.client, sess, dev)
+	azHostMetrics, err := c.collectHCIWithRetry(b, dev, &sess, func(sess sangforclient.HCISession) ([]core.Metric, error) {
+		return sangforhci.CollectAZAndHostMetrics(b.client, sess, dev)
+	})
 	if err != nil {
-		if dev.Token == "" {
-			b.sm.Invalidate()
-			s, e := b.sm.GetOrLogin(context.Background(), dev.Username, dev.Password)
-			if e != nil {
-				return nil, e
-			}
-			sess = s
-			vmMetrics, err = sangforhci.CollectVMMetrics(b.client, sess, dev)
-		}
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
-	storageMetrics, err := sangforhci.CollectStorageMetrics(b.client, sess, dev)
+	vmMetrics, err := c.collectHCIWithRetry(b, dev, &sess, func(sess sangforclient.HCISession) ([]core.Metric, error) {
+		return sangforhci.CollectVMMetrics(b.client, sess, dev)
+	})
 	if err != nil {
-		if dev.Token == "" {
-			b.sm.Invalidate()
-			s, e := b.sm.GetOrLogin(context.Background(), dev.Username, dev.Password)
-			if e != nil {
-				return nil, e
-			}
-			sess = s
-			storageMetrics, err = sangforhci.CollectStorageMetrics(b.client, sess, dev)
-		}
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
-	networkMetrics, err := sangforhci.CollectNetworkMetrics(b.client, sess, dev)
+	storageMetrics, err := c.collectHCIWithRetry(b, dev, &sess, func(sess sangforclient.HCISession) ([]core.Metric, error) {
+		return sangforhci.CollectStorageMetrics(b.client, sess, dev)
+	})
 	if err != nil {
-		if dev.Token == "" {
-			b.sm.Invalidate()
-			s, e := b.sm.GetOrLogin(context.Background(), dev.Username, dev.Password)
-			if e != nil {
-				return nil, e
-			}
-			sess = s
-			networkMetrics, err = sangforhci.CollectNetworkMetrics(b.client, sess, dev)
-		}
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
-	metrics := append([]core.Metric{}, overviewMetrics...)
-	metrics = append(metrics, azHostMetrics...)
-	metrics = append(metrics, vmMetrics...)
-	metrics = append(metrics, storageMetrics...)
-	metrics = append(metrics, networkMetrics...)
-	return metrics, nil
+	networkMetrics, err := c.collectHCIWithRetry(b, dev, &sess, func(sess sangforclient.HCISession) ([]core.Metric, error) {
+		return sangforhci.CollectNetworkMetrics(b.client, sess, dev)
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return mergeMetricGroups(overviewMetrics, azHostMetrics, vmMetrics, storageMetrics, networkMetrics), nil
 }
